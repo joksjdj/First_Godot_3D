@@ -1,0 +1,128 @@
+[gd_scene format=3 uid="uid://mgp02mkor0at"]
+
+[ext_resource type="PackedScene" uid="uid://bs72ogkvdd7d6" path="res://addons/proto_controller/proto_controller.tscn" id="1_a202f"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_a202f"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_noarx"]
+sky_material = SubResource("ProceduralSkyMaterial_a202f")
+
+[sub_resource type="Environment" id="Environment_a0tk4"]
+background_mode = 2
+sky = SubResource("Sky_noarx")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a202f"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_noarx"]
+albedo_color = Color(0, 0.66719174, 0.7612346, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r3fl7"]
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jka67"]
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a0tk4"]
+albedo_color = Color(0.05490196, 0.41960785, 0.14509805, 1)
+
+[node name="Main" type="Node3D" unique_id=1704034660]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=166020732]
+environment = SubResource("Environment_a0tk4")
+
+[node name="ProtoController" parent="." unique_id=1402904507 instance=ExtResource("1_a202f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 7)
+
+[node name="Mesh" parent="ProtoController" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1139654, 0.26785278)
+gi_mode = 2
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1457087684]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 941.7256, 0)
+
+[node name="Base" type="CSGCylinder3D" parent="." unique_id=2108500309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 11.90625, 21)
+use_collision = true
+radius = 70.0
+height = 27.8125
+material = SubResource("StandardMaterial3D_a202f")
+
+[node name="Subtraction" type="CSGCylinder3D" parent="Base" unique_id=1194819368]
+physics_interpolation_mode = 2
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.171875, 0)
+operation = 2
+use_collision = true
+radius = 66.0
+height = 25.65625
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Base" unique_id=1616414408]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, -10.5, -13.341999, -2.839779)
+size = Vector3(12, 6, 25)
+material = SubResource("StandardMaterial3D_noarx")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Base" unique_id=1284705214]
+transform = Transform3D(0.5892542, -0.33058026, 0.7372219, 0.20640005, 0.94377786, 0.2582292, -0.7811392, 0, 0.62435687, -6.8906984, -3.6427765, 18.267384)
+size = Vector3(1, 1, 15.386597)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Base/CSGBox3D2" unique_id=72450507]
+transform = Transform3D(-0.72723794, 0.5899767, -0.35079724, 0.09456769, 0.59232247, 0.8001317, 0.6798411, 0.5487095, -0.4865498, -8.084087, 11.010407, -7.586833)
+size = Vector3(3, 1, 29)
+material = SubResource("StandardMaterial3D_r3fl7")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Base/CSGBox3D2" unique_id=689131382]
+transform = Transform3D(0.58925426, 0.20640008, -0.7811393, -0.33058026, 0.9437779, 0, 0.73722196, 0.25822923, 0.62435687, 4.9177055, -1.6196976, 16.095764)
+size = Vector3(12.811768, 1, 13.932495)
+material = SubResource("StandardMaterial3D_jka67")
+
+[node name="SecondFloor" type="CSGCylinder3D" parent="Base" unique_id=1016782986]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2555542, 0)
+radius = 68.37109
+height = 1.4888916
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Base/SecondFloor" unique_id=738946929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.975647, 0)
+operation = 2
+radius = 54.274902
+height = 17.51233
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Base/SecondFloor" unique_id=1845654727]
+transform = Transform3D(0.8693541, 0, 0, 0, 0.8693541, 0, 0, 0, 4.1911526, 0, 0, -47.513256)
+polygon = PackedVector2Array(-52.00415, -26.708244, -8.056169, 0.13117409, 9.107098, 1.87708, 28.595737, -15.281982)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Base/SecondFloor" unique_id=1304877465]
+transform = Transform3D(0.8688882, -0.33963257, -0.3601156, 0.39588422, 0.91351396, 0.09363677, 0.29716852, -0.22392395, 0.9281967, 35.0179, -6.763213, 12.299679)
+size = Vector3(33.132813, 1, 9.784668)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Base/SecondFloor" unique_id=1071473905]
+transform = Transform3D(0.86602545, -0.50000006, 0, 0.50000006, 0.86602545, 0, 0, 0, 1, -49, 3, 11.5)
+size = Vector3(15, 1, 12)
+
+[node name="Tower" type="CSGBox3D" parent="Base" unique_id=1010729385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.529892, 6.7605934, 8.259155)
+size = Vector3(10.922607, 3, 11.404541)
+material = SubResource("StandardMaterial3D_a0tk4")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Base/Tower" unique_id=524532627]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0217247, 2.6084938, -0.19800186)
+operation = 2
+size = Vector3(9, 5, 10)
+
+[node name="Support" type="CSGBox3D" parent="Base/Tower" unique_id=511314967]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0317955, -6.9348717, 0.0049438477)
+size = Vector3(10.922607, 31, 11.404541)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Base/Tower/Support" unique_id=250202515]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.767578, -0.115234375)
+operation = 2
+size = Vector3(9, 49, 17)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Base/Tower/Support" unique_id=480278999]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, -8.883579, 0.027824402)
+operation = 2
+size = Vector3(9.5, 47, 17)
+
+[editable path="ProtoController"]
