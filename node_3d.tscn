@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://mgp02mkor0at"]
 
 [ext_resource type="PackedScene" uid="uid://bs72ogkvdd7d6" path="res://addons/proto_controller/proto_controller.tscn" id="1_a202f"]
+[ext_resource type="PackedScene" uid="uid://dc8eu8t0twpix" path="res://addons/Bullet.tscn" id="2_noarx"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_a202f"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -19,6 +20,18 @@ glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_noarx"]
 albedo_color = Color(0, 0.66719174, 0.7612346, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5arm"]
+albedo_color = Color(0.3665946, 0.3665946, 0.36659458, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a0tk4"]
+albedo_color = Color(0.05490196, 0.41960785, 0.14509805, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wc5p8"]
+albedo_color = Color(0, 0.51844734, 0.13741925, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jsk3o"]
+albedo_color = Color(1, 0, 0.016666412, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4arys"]
 albedo_color = Color(0.21816663, 0.77, 0, 1)
@@ -41,18 +54,6 @@ albedo_color = Color(0.9499998, 0, 1, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cdqbm"]
 albedo_color = Color(1, 0.16000003, 0.16000003, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5arm"]
-albedo_color = Color(0.3665946, 0.3665946, 0.36659458, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a0tk4"]
-albedo_color = Color(0.05490196, 0.41960785, 0.14509805, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wc5p8"]
-albedo_color = Color(0, 0.51844734, 0.13741925, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jsk3o"]
-albedo_color = Color(1, 0, 0.016666412, 1)
-
 [node name="Main" type="Node3D" unique_id=1704034660]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=166020732]
@@ -60,10 +61,72 @@ environment = SubResource("Environment_a0tk4")
 
 [node name="ProtoController" parent="." unique_id=1402904507 instance=ExtResource("1_a202f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 7)
+object_to_spawn = ExtResource("2_noarx")
 
 [node name="Mesh" parent="ProtoController" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1139654, 0.26785278)
 gi_mode = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="ProtoController" unique_id=1244473004]
+
+[node name="Control" type="Control" parent="ProtoController/CanvasLayer" unique_id=1870464102]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Node2D" type="Node2D" parent="ProtoController/CanvasLayer/Control" unique_id=1750121639]
+
+[node name="Line2D" type="Line2D" parent="ProtoController/CanvasLayer/Control/Node2D" unique_id=1064526790]
+position = Vector2(520, 288)
+points = PackedVector2Array(32, 32, 48, 32)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="red" type="Line2D" parent="ProtoController/CanvasLayer/Control/Node2D" unique_id=249891666]
+visible = false
+position = Vector2(544, 288)
+points = PackedVector2Array(24, 24, 16, 16)
+width = 3.0
+default_color = Color(0.9474059, 3.778264e-06, 1.732707e-06, 1)
+
+[node name="red" type="Line2D" parent="ProtoController/CanvasLayer/Control/Node2D/red" unique_id=694004770]
+position = Vector2(64, 0)
+rotation = 1.5707964
+points = PackedVector2Array(24, 24, 20.485723, 20.485725, 16, 16)
+width = 3.0
+default_color = Color(0.9474059, 3.778264e-06, 1.732707e-06, 1)
+
+[node name="red2" type="Line2D" parent="ProtoController/CanvasLayer/Control/Node2D/red" unique_id=1351388760]
+position = Vector2(40, 24)
+rotation = 1.5707964
+points = PackedVector2Array(24, 24, 20.485723, 20.485725, 16, 16)
+width = 3.0
+default_color = Color(0.9474059, 3.778264e-06, 1.732707e-06, 1)
+
+[node name="red3" type="Line2D" parent="ProtoController/CanvasLayer/Control/Node2D/red" unique_id=566479623]
+position = Vector2(24, 24)
+points = PackedVector2Array(24, 24, 16, 16)
+width = 3.0
+default_color = Color(0.9474059, 3.778264e-06, 1.732707e-06, 1)
+
+[node name="Line2D2" type="Line2D" parent="ProtoController/CanvasLayer/Control/Node2D" unique_id=2076050890]
+position = Vector2(568, 288)
+points = PackedVector2Array(16, 32, 32, 32)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D3" type="Line2D" parent="ProtoController/CanvasLayer/Control/Node2D" unique_id=58643851]
+position = Vector2(544, 312)
+points = PackedVector2Array(32, 16, 32, 23.912376, 32, 31.910828, 32, 32)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D4" type="Line2D" parent="ProtoController/CanvasLayer/Control/Node2D" unique_id=292822640]
+position = Vector2(544, 264)
+points = PackedVector2Array(32, 40, 32, 32, 32, 31.910828, 32, 48)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1457087684]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 941.7256, 0)
@@ -87,41 +150,6 @@ height = 46.828125
 transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, -10.5, -23.388874, -2.839779)
 size = Vector3(12, 6, 25)
 material = SubResource("StandardMaterial3D_noarx")
-
-[node name="Floating" type="CSGBox3D" parent="Base" unique_id=1284705214]
-transform = Transform3D(0.5892542, -0.33058026, 0.7372219, 0.20640005, 0.94377786, 0.2582292, -0.7811392, 0, 0.62435687, -6.8906984, -13.6896515, 18.267384)
-size = Vector3(1, 1, 15.386597)
-material = SubResource("StandardMaterial3D_4arys")
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="Base/Floating" unique_id=72450507]
-transform = Transform3D(-0.72723794, 0.5899767, -0.35079724, 0.09456769, 0.59232247, 0.8001317, 0.6798411, 0.5487095, -0.4865498, -8.084087, 11.010407, -7.586833)
-size = Vector3(3, 1, 29)
-material = SubResource("StandardMaterial3D_r3fl7")
-
-[node name="CSGBox3D3" type="CSGBox3D" parent="Base/Floating" unique_id=689131382]
-transform = Transform3D(0.58925426, 0.20640008, -0.7811393, -0.33058026, 0.9437779, 0, 0.73722196, 0.25822923, 0.62435687, 4.9177055, -1.6196976, 16.095764)
-size = Vector3(12.811768, 1, 13.932495)
-material = SubResource("StandardMaterial3D_jka67")
-
-[node name="CSGBox3D" type="CSGBox3D" parent="Base/Floating" unique_id=245676504]
-transform = Transform3D(0.97319984, 0.14503689, -0.17848471, -0.18761998, 0.94951767, -0.2514258, 0.13301274, 0.2781734, 0.95127714, -3.095871, 14.220586, -38.19862)
-size = Vector3(7, 1, 19)
-material = SubResource("StandardMaterial3D_6iypd")
-
-[node name="CSGBox3D4" type="CSGBox3D" parent="Base/Floating" unique_id=472359704]
-transform = Transform3D(0.42883292, 0.20694688, 0.8793636, 0.20834035, 0.92451364, -0.31917, -0.87903845, 0.32007372, 0.35334143, 15.5139885, 8.60072, -32.53377)
-size = Vector3(7, 1, 19)
-material = SubResource("StandardMaterial3D_tereu")
-
-[node name="CSGBox3D5" type="CSGBox3D" parent="Base/Floating" unique_id=1952507832]
-transform = Transform3D(0.97320306, 0.14503689, -0.17848471, -0.18761994, 0.94951767, -0.2514258, 0.13301468, 0.2781734, 0.95127714, 17.841105, 0.37209415, -4.8666725)
-size = Vector3(5, 1, 33)
-material = SubResource("StandardMaterial3D_imku0")
-
-[node name="CSGBox3D6" type="CSGBox3D" parent="Base/Floating" unique_id=1959384410]
-transform = Transform3D(0.40407842, 0.049481608, 0.913388, 0.09282026, 0.9911637, -0.094757006, -0.9100094, 0.123067364, 0.39590952, 42.174133, -6.373361, 9.850444)
-size = Vector3(7, 1, 42)
-material = SubResource("StandardMaterial3D_cdqbm")
 
 [node name="SecondFloor" type="CSGCylinder3D" parent="Base" unique_id=1016782986]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.791321, 0)
@@ -196,5 +224,42 @@ height = 146.75
 [node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Base/Pole" unique_id=580069838]
 transform = Transform3D(-3.0908616e-08, -0.7071067, -0.7071068, 1.1062973e-09, 0.7071068, -0.7071067, 1, -2.2637963e-08, -2.1073422e-08, 0, 0.6088333, -0.0021419525)
 height = 146.75
+
+[node name="Floating" type="Node3D" parent="Base" unique_id=2083683181]
+
+[node name="Floating" type="CSGBox3D" parent="Base/Floating" unique_id=1284705214]
+transform = Transform3D(0.5892542, -0.33058026, 0.7372219, 0.20640005, 0.94377786, 0.2582292, -0.7811392, 0, 0.62435687, -6.8906984, -13.6896515, 18.267384)
+size = Vector3(1, 1, 15.386597)
+material = SubResource("StandardMaterial3D_4arys")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Base/Floating" unique_id=72450507]
+transform = Transform3D(0.041403532, 0.5563568, -0.82991165, 0.11470377, 0.82248485, 0.55710065, 0.9925375, -0.11826339, -0.029759228, -20.887283, -6.925971, 19.845291)
+size = Vector3(3, 1, 29)
+material = SubResource("StandardMaterial3D_r3fl7")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Base/Floating" unique_id=689131382]
+transform = Transform3D(1, 1.4901161e-08, -5.9604645e-08, 0, 1, -2.9802322e-08, 0, 0, 1, 8.40867, -10.046875, 24.475471)
+size = Vector3(12.811768, 1, 13.932495)
+material = SubResource("StandardMaterial3D_jka67")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Base/Floating" unique_id=245676504]
+transform = Transform3D(0.7335454, -0.023352683, 0.6792459, 0.05814469, 0.99790186, -0.028481826, -0.67715716, 0.060385473, 0.7333578, -41.576855, -10.7715645, -3.1638813)
+size = Vector3(7, 1, 19)
+material = SubResource("StandardMaterial3D_6iypd")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Base/Floating" unique_id=472359704]
+transform = Transform3D(-0.46422797, 0.05228369, 0.884171, 0.058144733, 0.99790174, -0.028481811, -0.88381183, 0.03818591, -0.46629423, -24.576855, -10.771564, -14.163883)
+size = Vector3(7, 1, 19)
+material = SubResource("StandardMaterial3D_tereu")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Base/Floating" unique_id=1952507832]
+transform = Transform3D(0.73354876, -0.023352683, 0.6792459, 0.05814589, 0.99790186, -0.028481826, -0.6771584, 0.060385473, 0.7333578, -0.08857632, -10.912789, 1.2924576)
+size = Vector3(5, 1, 33)
+material = SubResource("StandardMaterial3D_imku0")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Base/Floating" unique_id=1959384410]
+transform = Transform3D(-0.46345848, -0.20777395, 0.8614157, -0.06398748, 0.97743094, 0.20132917, -0.88381207, 0.03818593, -0.46629435, 27.329456, -8.456273, -8.526291)
+size = Vector3(7, 1, 42)
+material = SubResource("StandardMaterial3D_cdqbm")
 
 [editable path="ProtoController"]

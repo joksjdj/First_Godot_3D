@@ -38,6 +38,9 @@ extends CharacterBody3D
 ## Name of Input Action to Sprint.
 @export var input_sprint : String = "Sprint"
 
+## Bullet
+@export var object_to_spawn: PackedScene
+
 var mouse_captured : bool = false
 var look_rotation : Vector2
 var move_speed : float = 0.0
@@ -48,7 +51,6 @@ var freeflying : bool = false
 @onready var collider: CollisionShape3D = $Collider
 
 func _ready() -> void:
-	check_input_mappings()
 	look_rotation.y = rotation.y
 	look_rotation.x = head.rotation.x
 
@@ -78,12 +80,11 @@ func _physics_process(delta: float) -> void:
 	# Modify speed based on sprinting
 	if can_sprint and Input.is_action_pressed(input_sprint):
 			move_speed = sprint_speed
-			var camera = $Head/Camera3D
-			camera.fov = 85
+			smooth_fov(85, 0.5)
 	else:
 		move_speed = base_speed
 		var camera = $Head/Camera3D
-		camera.fov = 75
+		smooth_fov(75, 0.5)
 
 	# Apply desired movement to velocity
 	if can_move:
@@ -115,45 +116,33 @@ func rotate_look(rot_input : Vector2):
 	head.transform.basis = Basis()
 	head.rotate_x(look_rotation.x)
 
-
-func enable_freefly():
-	collider.disabled = true
-	freeflying = true
-	velocity = Vector3.ZERO
-
-func disable_freefly():
-	collider.disabled = false
-	freeflying = false
-
-
 func capture_mouse():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	mouse_captured = true
-
 
 func release_mouse():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	mouse_captured = false
 
+func smooth_fov(target_fov: float, duration: float = 0.5):
+	var camera = $Head/Camera3D
+	var tween = create_tween()
+	tween.tween_property(camera, "fov", target_fov, duration)
 
-## Checks if some Input Actions haven't been created.
-## Disables functionality accordingly.
-func check_input_mappings():
-	if can_move and not InputMap.has_action(input_left):
-		push_error("Movement disabled. No InputAction found for input_left: " + input_left)
-		can_move = false
-	if can_move and not InputMap.has_action(input_right):
-		push_error("Movement disabled. No InputAction found for input_right: " + input_right)
-		can_move = false
-	if can_move and not InputMap.has_action(input_forward):
-		push_error("Movement disabled. No InputAction found for input_forward: " + input_forward)
-		can_move = false
-	if can_move and not InputMap.has_action(input_back):
-		push_error("Movement disabled. No InputAction found for input_back: " + input_back)
-		can_move = false
-	if can_jump and not InputMap.has_action(input_jump):
-		push_error("Jumping disabled. No InputAction found for input_jump: " + input_jump)
-		can_jump = false
-	if can_sprint and not InputMap.has_action(input_sprint):
-		push_error("Sprinting disabled. No InputAction found for input_sprint: " + input_sprint)
-		can_sprint = false
+func _input(event):
+	if event.is_action_pressed("MouseLeft"):
+		spawn_bullet()
+		
+func spawn_bullet():
+	var camera = $Head/Camera3D
+	var obj = object_to_spawn.instantiate()
+	var area = get_parent().get_node("Base")
+	area.add_child(obj)
+	obj.global_transform.basis.y = camera.global_transform.basis.z
+	obj.global_position = camera.global_transform.origin + -camera.global_transform.basis.z * 2.0
+	
+	var target_position = obj.global_transform.origin + -obj.global_transform.basis.y * 70.0
+	var tween = create_tween()
+	tween.tween_property(obj, "global_position", target_position, 1.0)
+	await get_tree().create_timer(1.0).timeout
+	obj.queue_free()
