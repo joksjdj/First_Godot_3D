@@ -136,13 +136,17 @@ func _input(event):
 func spawn_bullet():
 	var camera = $Head/Camera3D
 	var obj = object_to_spawn.instantiate()
-	var area = get_parent().get_node("Base")
+	var area = get_parent().get_node("Area3D")
 	area.add_child(obj)
-	obj.global_transform.basis.y = camera.global_transform.basis.z
+	obj.global_transform.basis = camera.global_transform.basis.orthonormalized()
 	obj.global_position = camera.global_transform.origin + -camera.global_transform.basis.z * 2.0
 	
-	var target_position = obj.global_transform.origin + -obj.global_transform.basis.y * 70.0
+	var target_position = obj.global_transform.origin + -obj.global_transform.basis.z * 70.0
 	var tween = create_tween()
-	tween.tween_property(obj, "global_position", target_position, 1.0)
-	await get_tree().create_timer(1.0).timeout
+	tween.tween_property(obj, "global_position", target_position, 100.0)
+	await get_tree().create_timer(100.0).timeout
 	obj.queue_free()
+
+
+func _on_area_3d_body_entered(body: RigidBody3D) -> void:
+	print("Hit:", body)
