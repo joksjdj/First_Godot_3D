@@ -40,6 +40,9 @@ extends CharacterBody3D
 
 ## Bullet
 @export var object_to_spawn: PackedScene
+## Grappling
+var grappling_pos
+var is_grappling = false
 
 var mouse_captured : bool = false
 var look_rotation : Vector2
@@ -98,7 +101,11 @@ func _physics_process(delta: float) -> void:
 			velocity.z = move_toward(velocity.z, 0, move_speed)
 	else:
 		velocity.x = 0
-		velocity.y = 0
+		
+	if is_grappling == true:
+		position.x = lerp(position.x, grappling_pos.x, 0.01)
+		position.z = lerp(position.z, grappling_pos.z, 0.01)
+		position.y = lerp(position.y, grappling_pos.y, 0.02)
 	
 	# Use velocity to actually move
 	move_and_slide()
@@ -133,10 +140,21 @@ func _input(event):
 	if event.is_action_pressed("MouseLeft"):
 		spawn_bullet()
 		
+	if event.is_action_pressed("MouseRight"):
+		grappling()
+		
 func spawn_bullet():
 	var camera = $Head/Camera3D
 	var obj = object_to_spawn.instantiate()
 	var area = get_parent().get_node("Area3D")
 	area.add_child(obj)
+	obj.global_transform.basis = camera.global_transform.basis.orthonormalized()
+	obj.global_position = camera.global_transform.origin + -camera.global_transform.basis.z
+
+@export var grappling_to_spawn: PackedScene
+func grappling():
+	var camera = $Head/Camera3D
+	var obj = grappling_to_spawn.instantiate()
+	add_child(obj)
 	obj.global_transform.basis = camera.global_transform.basis.orthonormalized()
 	obj.global_position = camera.global_transform.origin + -camera.global_transform.basis.z

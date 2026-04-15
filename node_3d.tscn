@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://bs72ogkvdd7d6" path="res://addons/proto_controller/proto_controller.tscn" id="1_a202f"]
 [ext_resource type="PackedScene" uid="uid://dc8eu8t0twpix" path="res://addons/Bullet.tscn" id="2_noarx"]
 [ext_resource type="PackedScene" uid="uid://cjqfnwuvkmgvf" path="res://addons/enemy.tscn" id="3_a0tk4"]
+[ext_resource type="PackedScene" uid="uid://csxicr2s7p5uv" path="res://addons/grappling.tscn" id="3_r3fl7"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_a202f"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -27,15 +28,18 @@ func _ready() -> void:
 	var spawn = get_parent().get_node(\"Area3D\").get_node(\"SpawnPoint\")
 	var area = get_parent().get_node(\"Enemies\")
 	
-	for i in 10:
+	var points = spawn.get_children()
+	points.shuffle()
+
+	for i in range(7):
+		if points.is_empty():
+			break
+
 		var enemy = enemy_to_spawn.instantiate()
-		var points = spawn.get_children()
-		var random_spawn = points[randi() % points.size()]
-		
+		var random_spawn = points.pop_back()  # removes AND returns last element
+
 		area.add_child(enemy)
-		
 		enemy.global_position = random_spawn.global_position
-		
 		random_spawn.queue_free()
 "
 
@@ -370,6 +374,7 @@ environment = SubResource("Environment_a0tk4")
 [node name="MainPlayer" parent="." unique_id=1402904507 instance=ExtResource("1_a202f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 7)
 object_to_spawn = ExtResource("2_noarx")
+grappling_to_spawn = ExtResource("3_r3fl7")
 
 [node name="Mesh" parent="MainPlayer" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1139654, 0.26785278)
@@ -656,6 +661,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -59, 20.491375, -8)
 
 [node name="Marker3D10" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=1760747558]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 2.7449906, 47)
+
+[node name="Marker3D11" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=980353924]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.871765, 0.73471385, 0)
+
+[node name="Marker3D12" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=853737015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.943237, 0.7494736, 15)
 
 [node name="Enemies" type="Node3D" parent="." unique_id=2071788153]
 
