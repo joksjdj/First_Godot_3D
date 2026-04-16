@@ -15,6 +15,10 @@ run/main_scene="uid://mgp02mkor0at"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/borderless=true
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/csg_converter/plugin.cfg")

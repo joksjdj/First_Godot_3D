@@ -12,15 +12,11 @@ func _physics_process(delta: float) -> void:
 			hit.health -= 10
 			print(\"Hit:\", hit.name, \"| Health:\", hit.health)
 		else:
-			print(\"Hit:\", hit, hit.name)
+			print(\"Hit:\", hit.name, \"|\", hit)
 		queue_free()
 	
 	global_position = global_transform.origin + -global_transform.basis.z * 1.0
 "
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_xmp5n"]
-height = 0.17510986
-radius = 0.01953125
 
 [sub_resource type="MeshTexture" id="MeshTexture_xmp5n"]
 
@@ -30,11 +26,9 @@ metallic = 1.0
 metallic_texture = SubResource("MeshTexture_xmp5n")
 
 [node name="Area3D" type="Area3D" unique_id=975487893]
+collision_layer = 3
+collision_mask = 3
 script = SubResource("GDScript_xmp5n")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1615674381]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 1.8715538e-09, -0.042816162)
-shape = SubResource("CylinderShape3D_xmp5n")
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="." unique_id=1231915866]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 1.96564e-09, -0.044968605)
@@ -44,5 +38,6 @@ material = SubResource("StandardMaterial3D_aohai")
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=1983468559]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.042672697)
+collision_mask = 3
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

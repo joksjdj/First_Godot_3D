@@ -7,8 +7,6 @@ extends CharacterBody3D
 
 ## Can we move around?
 @export var can_move : bool = true
-## Are we affected by gravity?
-@export var has_gravity : bool = true
 ## Can we press to jump?
 @export var can_jump : bool = true
 ## Can we hold to run?
@@ -71,9 +69,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	
 	# Apply gravity to velocity
-	if has_gravity:
-		if not is_on_floor():
-			velocity += get_gravity() * 2 * delta
+	if not is_on_floor():
+		velocity += get_gravity() * 2 * delta
 
 	# Apply jumping
 	if can_jump:
@@ -99,13 +96,14 @@ func _physics_process(delta: float) -> void:
 		else:
 			velocity.x = move_toward(velocity.x, 0, move_speed)
 			velocity.z = move_toward(velocity.z, 0, move_speed)
-	else:
-		velocity.x = 0
 		
 	if is_grappling == true:
 		position.x = lerp(position.x, grappling_pos.x, 0.01)
 		position.z = lerp(position.z, grappling_pos.z, 0.01)
 		position.y = lerp(position.y, grappling_pos.y, 0.02)
+	
+	var fps = Engine.get_frames_per_second()
+	print(fps)
 	
 	# Use velocity to actually move
 	move_and_slide()

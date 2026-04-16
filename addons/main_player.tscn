@@ -1,0 +1,109 @@
+[gd_scene format=3 uid="uid://bjpcpkarrakqi"]
+
+[ext_resource type="Script" uid="uid://c1nkb217t4usv" path="res://addons/proto_controller/proto_controller.gd" id="1_8poij"]
+[ext_resource type="PackedScene" uid="uid://dc8eu8t0twpix" path="res://addons/Bullet.tscn" id="2_jo1w2"]
+[ext_resource type="PackedScene" uid="uid://csxicr2s7p5uv" path="res://addons/grappling.tscn" id="3_c7qvv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iof21"]
+albedo_color = Color(0.91806, 0.575202, 0.222449, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ucva2"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iof21"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wc5p8"]
+albedo_color = Color(0.13, 0.9130001, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_jsk3o"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_4arys"]
+
+[node name="MainPlayer" type="CharacterBody3D" unique_id=1996959735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 7)
+script = ExtResource("1_8poij")
+object_to_spawn = ExtResource("2_jo1w2")
+grappling_to_spawn = ExtResource("3_c7qvv")
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=1005837819]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1139654, 0.26785278)
+material_override = SubResource("StandardMaterial3D_iof21")
+cast_shadow = 0
+gi_mode = 2
+mesh = SubResource("CapsuleMesh_ucva2")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=901519620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.123664, 0.26596928)
+shape = SubResource("CapsuleShape3D_iof21")
+
+[node name="Head" type="Node3D" parent="." unique_id=1270458394]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=1501744608]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06581187, -0.106402874)
+
+[node name="Node3D" type="Node3D" parent="Head" unique_id=1092265460]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head/Node3D" unique_id=1869476738]
+transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, -0.1, 0, 0)
+material_overlay = SubResource("StandardMaterial3D_wc5p8")
+mesh = SubResource("CylinderMesh_jsk3o")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Head/Node3D" unique_id=1835232252]
+transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, 0.1, 0, 0)
+material_overlay = SubResource("StandardMaterial3D_wc5p8")
+mesh = SubResource("CylinderMesh_jsk3o")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Head/Node3D" unique_id=71324101]
+transform = Transform3D(0.21, 0, 0, 0, 0.165, 0, 0, 0, 0.396, 0, 0.039, 0)
+material_overlay = SubResource("StandardMaterial3D_wc5p8")
+mesh = SubResource("BoxMesh_4arys")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=530873172]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer" unique_id=1563939277]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Node2D" type="Node2D" parent="CanvasLayer/TextureRect" unique_id=1907562681]
+position = Vector2(556, 304)
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/Node2D" unique_id=1022014041]
+position = Vector2(-595.63635, -326.57748)
+scale = Vector2(1.0909091, 1.3333334)
+points = PackedVector2Array(32, 32, 48, 32)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D2" type="Line2D" parent="CanvasLayer/TextureRect/Node2D" unique_id=17038708]
+position = Vector2(-546.1818, -326.57748)
+scale = Vector2(1.0909091, 1.3333334)
+points = PackedVector2Array(16, 32, 32, 32)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D3" type="Line2D" parent="CanvasLayer/TextureRect/Node2D" unique_id=1381242553]
+position = Vector2(-578.6667, -293.95078)
+scale = Vector2(1.3333334, 1.0868558)
+points = PackedVector2Array(32, 16, 32, 23.912376, 32, 31.910828, 32, 32)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D4" type="Line2D" parent="CanvasLayer/TextureRect/Node2D" unique_id=1146667014]
+position = Vector2(-578.6666, -343.52847)
+scale = Vector2(1.3333334, 1.0905421)
+points = PackedVector2Array(32, 40, 32, 32, 32, 31.910828, 32, 48)
+width = 3.0
+default_color = Color(0, 0, 0, 1)

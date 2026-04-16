@@ -13,7 +13,7 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_released(\"MouseRight\"):
 		stop_all = true
 		var current_pos = get_parent().global_position
-		get_parent().velocity += (current_pos - start_pos)
+		get_parent().velocity += (current_pos - start_pos) * 2
 		
 		get_parent().is_grappling = false
 		queue_free()
