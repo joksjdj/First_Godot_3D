@@ -398,6 +398,15 @@ func _on_keybind_pressed(source_node) -> void:
 	keybind_name = source_node.get_parent().name
 	keybind = source_node
 	print(keybind_name)
+
+
+func _on_vsync_button_pressed(source: BaseButton) -> void:
+	if DisplayServer.window_get_vsync_mode() == DisplayServer.VSYNC_ENABLED:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+		source.text = \"OFF\"
+	else:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+		source.text = \"ON\"
 "
 
 [node name="Main" type="Node3D" unique_id=1704034660]
@@ -702,6 +711,17 @@ max_value = 400.0
 step = 5.0
 value = 30.0
 
+[node name="vsync" type="HBoxContainer" parent="Area2D/Control/Settings" unique_id=574891958]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Area2D/Control/Settings/vsync" unique_id=2100651084]
+layout_mode = 2
+text = "Vsync: "
+
+[node name="Button" type="Button" parent="Area2D/Control/Settings/vsync" unique_id=2091692821]
+layout_mode = 2
+text = "ON"
+
 [node name="Input" type="VBoxContainer" parent="Area2D/Control/Settings" unique_id=657554954]
 layout_mode = 2
 
@@ -779,6 +799,7 @@ horizontal_alignment = 1
 
 [connection signal="button_up" from="Area2D/Control/VBoxContainer/Play" to="Area2D" method="_on_play_button_up"]
 [connection signal="value_changed" from="Area2D/Control/Settings/fps/HSlider" to="Area2D" method="_on_fps_value_changed"]
+[connection signal="pressed" from="Area2D/Control/Settings/vsync/Button" to="Area2D" method="_on_vsync_button_pressed" flags=18]
 [connection signal="pressed" from="Area2D/Control/Settings/Input/layer/Forward/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
 [connection signal="pressed" from="Area2D/Control/Settings/Input/layer2/Left/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
 [connection signal="pressed" from="Area2D/Control/Settings/Input/layer2/Backwards/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
