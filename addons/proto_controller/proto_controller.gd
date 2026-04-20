@@ -5,6 +5,8 @@
 
 extends CharacterBody3D
 
+var health = 50
+
 ## Can we move around?
 @export var can_move : bool = true
 ## Can we press to jump?
@@ -110,6 +112,13 @@ func _physics_process(delta: float) -> void:
 	
 	var fps = Engine.get_frames_per_second()
 	fps_value.text = str(fps)
+	
+	if health < 1:
+		release_mouse()
+		var area = get_parent().get_node("Area2D")
+		area.visible = true
+		area.get_node("Control").MOUSE_FILTER_STOP
+		queue_free()
 	
 	# Use velocity to actually move
 	move_and_slide()

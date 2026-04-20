@@ -1,13 +1,20 @@
 [gd_scene format=3 uid="uid://cjqfnwuvkmgvf"]
 
-[ext_resource type="PackedScene" uid="uid://cx7ynwqvtrbhs" path="res://addons/Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb" id="1_upa07"]
+[ext_resource type="PackedScene" uid="uid://dc8eu8t0twpix" path="res://addons/Bullet.tscn" id="1_upa07"]
 
 [sub_resource type="GDScript" id="GDScript_upa07"]
 resource_name = "Enemy"
 script/source = "extends CharacterBody3D
 
 var health = 30
+@onready var Head = $Head
+@onready var cooldown = 0
 
+func _ready():
+	while true:
+		await get_tree().create_timer(1.0).timeout
+		cooldown -= 1
+		
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -16,80 +23,81 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		
 	move_and_slide()
+	
+	var player = get_parent().get_parent().get_node(\"MainPlayer\")
+	if player:
+		$Head.look_at(player.get_node(\"Head\").global_position, Vector3.UP)
+	
+	if $Head/RayCast3D.is_colliding():
+		var hit = $Head/RayCast3D.get_collider()
+		if hit:
+			if hit.name == \"MainPlayer\" and cooldown < 1:
+				cooldown = 2
+				spawn_bullet()
+	
+@export var object_to_spawn: PackedScene
+func spawn_bullet():
+	var obj = object_to_spawn.instantiate()
+	add_child(obj)
+	obj.global_transform.basis = Head.global_transform.basis.orthonormalized()
+	obj.global_position = Head.global_transform.origin + -Head.global_transform.basis.z
+	
 "
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_upa07"]
-height = 1.8716412
+height = 1.3918753
 radius = 0.33935547
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fcg7d"]
+albedo_color = Color(0.91806, 0.575202, 0.222449, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_upa07"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ovji"]
+albedo_color = Color(0.13, 0.9130001, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0kpn3"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_0weul"]
 
 [node name="Enemy" type="CharacterBody3D" unique_id=802950666]
 transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, 0, 0)
 slide_on_ceiling = false
 script = SubResource("GDScript_upa07")
-
-[node name="UAL1_Standard" parent="." unique_id=580412360 instance=ExtResource("1_upa07")]
-
-[node name="GeneralSkeleton" parent="UAL1_Standard/Armature" parent_id_path=PackedInt32Array(580412360, 196509109) index="0" unique_id=87905388]
-bones/1/position = Vector3(0.0053169443, 0.87717235, -0.08649441)
-bones/1/rotation = Quaternion(-0.04628033, -0.11588846, -0.005405691, 0.9921687)
-bones/3/rotation = Quaternion(0.09260246, 0.000112654714, 0.00025388045, 0.99570316)
-bones/4/rotation = Quaternion(0.092602395, 0.00032065847, 0.00024720546, 0.9957031)
-bones/5/rotation = Quaternion(-0.09260248, -0.00021697924, -0.0002602538, 0.9957031)
-bones/6/rotation = Quaternion(0.07725409, 0.0957206, 0.007964551, 0.99237394)
-bones/7/rotation = Quaternion(-0.015843734, -0.05474415, -0.0156098455, 0.9982527)
-bones/8/rotation = Quaternion(-0.009801044, 0.06222128, -0.5722163, 0.81768024)
-bones/9/rotation = Quaternion(0.042903226, -0.2637861, -0.004893742, 0.9636142)
-bones/10/rotation = Quaternion(0.006597247, -0.114572875, -0.025618374, 0.9930626)
-bones/11/rotation = Quaternion(0.7032572, 0.07366491, -0.70326173, 0.07366014)
-bones/12/rotation = Quaternion(0.62334186, 2.9802322e-08, -4.261732e-06, 0.78194946)
-bones/13/rotation = Quaternion(0.62334144, -2.2351742e-07, -4.4703484e-06, 0.78194976)
-bones/15/rotation = Quaternion(0.6880385, 0.059148557, -0.7177779, 0.088879)
-bones/16/rotation = Quaternion(0.6227327, -0.02755458, -4.410744e-06, 0.7819494)
-bones/17/rotation = Quaternion(0.6226684, -0.028961532, -4.4703493e-06, 0.78194976)
-bones/19/rotation = Quaternion(0.7179079, -0.018787144, -0.68874353, 0.09943685)
-bones/20/rotation = Quaternion(0.6203661, -0.06229401, 0.015573084, 0.7816796)
-bones/21/rotation = Quaternion(0.62192154, -0.04205184, -4.4703484e-06, 0.78194964)
-bones/23/rotation = Quaternion(0.6918507, 0.062657185, -0.71426904, 0.08506692)
-bones/24/rotation = Quaternion(0.6229472, -0.022176376, -4.321337e-06, 0.78194946)
-bones/25/rotation = Quaternion(0.6228982, -0.023505477, -4.5001498e-06, 0.7819497)
-bones/27/rotation = Quaternion(0.7251965, 0.6471803, 0.19616237, 0.12949216)
-bones/28/rotation = Quaternion(0.18180694, 0.11012423, 0.060063303, 0.9753006)
-bones/29/rotation = Quaternion(0.5994299, 0.27396563, 0.19463211, 0.7264606)
-bones/30/scale = Vector3(1.0001454, 1.0004877, 1.0005833)
-bones/31/rotation = Quaternion(-0.01567805, -0.04934128, 0.01589004, 0.99853253)
-bones/32/rotation = Quaternion(-0.009565889, -0.089077316, 0.5584878, 0.8246606)
-bones/33/rotation = Quaternion(0.15371151, 0.3514806, 0.061669294, 0.9214289)
-bones/34/rotation = Quaternion(-0.0025300507, 0.12525679, 0.04480203, 0.991109)
-bones/35/rotation = Quaternion(0.7032574, -0.073664375, 0.70326155, 0.0736602)
-bones/36/rotation = Quaternion(0.62334144, 1.825392e-07, 4.470348e-06, 0.7819497)
-bones/37/rotation = Quaternion(0.62334156, 1.00582824e-07, 4.2319293e-06, 0.78194964)
-bones/38/rotation = Quaternion(4.6566133e-09, 1, 4.295285e-08, -5.7654454e-08)
-bones/39/rotation = Quaternion(0.6880386, -0.05914828, 0.71777785, 0.08887878)
-bones/40/rotation = Quaternion(0.62273216, 0.027554482, 4.5001507e-06, 0.78194976)
-bones/41/rotation = Quaternion(0.62266874, 0.028961398, 4.3213377e-06, 0.78194946)
-bones/43/rotation = Quaternion(0.7179077, 0.018786924, 0.68874365, 0.09943698)
-bones/44/rotation = Quaternion(0.62036633, 0.06229363, -0.015572906, 0.7816794)
-bones/45/rotation = Quaternion(0.62192184, 0.04205143, 4.4703484e-06, 0.7819494)
-bones/46/rotation = Quaternion(-0.03375008, 0.99943036, 4.924054e-08, -5.6300305e-08)
-bones/47/rotation = Quaternion(0.6918509, -0.06265694, 0.7142689, 0.085066736)
-bones/48/rotation = Quaternion(0.62294656, 0.022176204, 4.470349e-06, 0.7819501)
-bones/49/rotation = Quaternion(0.6228987, 0.02350526, 4.1723247e-06, 0.7819493)
-bones/50/rotation = Quaternion(-0.018857837, 0.9998222, -1.5216909e-08, -2.369153e-07)
-bones/51/rotation = Quaternion(0.7251965, -0.6471802, -0.1961624, 0.12949234)
-bones/52/rotation = Quaternion(0.18180703, -0.11012423, -0.060063303, 0.97530067)
-bones/53/rotation = Quaternion(0.5994302, -0.2739653, -0.19463223, 0.7264605)
-bones/54/scale = Vector3(1.0001454, 1.0004876, 1.0005835)
-bones/55/rotation = Quaternion(0.9866821, 0.111223824, 0.0003889959, 0.11869087)
-bones/56/rotation = Quaternion(0.1848538, -0.112100944, 0.021219432, 0.97612107)
-bones/57/rotation = Quaternion(-0.49533695, 0.022376541, 0.09231861, 0.8634917)
-bones/58/rotation = Quaternion(-0.00013718012, 0.9643068, -0.2647871, -0.00049941975)
-bones/60/rotation = Quaternion(0.9868193, -0.11532034, -0.00040331425, -0.11352808)
-bones/61/rotation = Quaternion(0.1146421, 0.3584105, -0.04440997, 0.9254334)
-bones/62/rotation = Quaternion(-0.5777094, -0.049669154, -0.16396312, 0.79806083)
-bones/63/rotation = Quaternion(-0.00013706379, 0.9643068, -0.2647871, -0.00049941434)
+object_to_spawn = ExtResource("1_upa07")
 
 [node name="Enemy" type="CollisionShape3D" parent="." unique_id=1823100976]
-transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 0.87841374, 0.020645147)
+transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 1.1182969, 0.020645147)
 shape = SubResource("CylinderShape3D_upa07")
 
-[editable path="UAL1_Standard"]
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=777808813]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09711, 0)
+material_override = SubResource("StandardMaterial3D_fcg7d")
+gi_mode = 2
+mesh = SubResource("CapsuleMesh_upa07")
+
+[node name="Head" type="Node3D" parent="." unique_id=1046566719]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="Node3D" type="Node3D" parent="Head" unique_id=489205891]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head/Node3D" unique_id=559417832]
+transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, 0.1, 0, -0.2)
+material_overlay = SubResource("StandardMaterial3D_5ovji")
+mesh = SubResource("CylinderMesh_0kpn3")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Head/Node3D" unique_id=1634201806]
+transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, -0.1, 0, -0.2)
+material_overlay = SubResource("StandardMaterial3D_5ovji")
+mesh = SubResource("CylinderMesh_0kpn3")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Head/Node3D" unique_id=920305462]
+transform = Transform3D(0.21, 0, 0, 0, 0.165, 0, 0, 0, 0.396, 0, 0.03798902, -0.20041561)
+material_overlay = SubResource("StandardMaterial3D_5ovji")
+mesh = SubResource("BoxMesh_0weul")
+
+[node name="RayCast3D" type="RayCast3D" parent="Head" unique_id=927069417]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+target_position = Vector3(0, -20, 0)
