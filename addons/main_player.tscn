@@ -29,14 +29,13 @@ object_to_spawn = ExtResource("2_jo1w2")
 grappling_to_spawn = ExtResource("3_c7qvv")
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=1005837819]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1139654, 0.26785278)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09711, 0)
 material_override = SubResource("StandardMaterial3D_iof21")
-cast_shadow = 0
 gi_mode = 2
 mesh = SubResource("CapsuleMesh_ucva2")
 
 [node name="Collider" type="CollisionShape3D" parent="." unique_id=901519620]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.123664, 0.26596928)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1005673, 0)
 shape = SubResource("CapsuleShape3D_iof21")
 
 [node name="Head" type="Node3D" parent="." unique_id=1270458394]
@@ -48,17 +47,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06581187, -0.106402874)
 [node name="Node3D" type="Node3D" parent="Head" unique_id=1092265460]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Head/Node3D" unique_id=1869476738]
-transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, -0.1, 0, 0)
+transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, 0.1, 0, -0.2)
 material_overlay = SubResource("StandardMaterial3D_wc5p8")
 mesh = SubResource("CylinderMesh_jsk3o")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Head/Node3D" unique_id=1835232252]
-transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, 0.1, 0, 0)
+transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, -0.1, 0, -0.2)
 material_overlay = SubResource("StandardMaterial3D_wc5p8")
 mesh = SubResource("CylinderMesh_jsk3o")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Head/Node3D" unique_id=71324101]
-transform = Transform3D(0.21, 0, 0, 0, 0.165, 0, 0, 0, 0.396, 0, 0.039, 0)
+transform = Transform3D(0.21, 0, 0, 0, 0.165, 0, 0, 0, 0.396, 0, 0.03798902, -0.20041561)
 material_overlay = SubResource("StandardMaterial3D_wc5p8")
 mesh = SubResource("BoxMesh_4arys")
 
@@ -107,3 +106,31 @@ scale = Vector2(1.3333334, 1.0905421)
 points = PackedVector2Array(32, 40, 32, 32, 32, 31.910828, 32, 48)
 width = 3.0
 default_color = Color(0, 0, 0, 1)
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=2071341533]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control" unique_id=56920900]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -11.500001
+anchor_top = -3.9
+anchor_right = -11.500001
+anchor_bottom = -3.9
+offset_left = 476.00003
+offset_top = 164.0
+offset_right = 616.0
+offset_bottom = 288.0
+
+[node name="fps" type="HBoxContainer" parent="CanvasLayer/Control/VBoxContainer" unique_id=391110111]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/fps" unique_id=444603497]
+layout_mode = 2
+text = "FPS: "
+
+[node name="value" type="Label" parent="CanvasLayer/Control/VBoxContainer/fps" unique_id=1459085852]
+layout_mode = 2

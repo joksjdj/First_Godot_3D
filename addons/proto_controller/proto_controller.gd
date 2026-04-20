@@ -51,6 +51,9 @@ var freeflying : bool = false
 @onready var head: Node3D = $Head
 @onready var collider: CollisionShape3D = $Collider
 
+## UI Elements
+@onready var fps_value: Label = $CanvasLayer/Control/VBoxContainer/fps/value
+
 func _ready() -> void:
 	look_rotation.y = rotation.y
 	look_rotation.x = head.rotation.x
@@ -61,6 +64,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		capture_mouse()
 	if Input.is_key_pressed(KEY_ESCAPE):
 		release_mouse()
+		var area = get_parent().get_node("Area2D")
+		area.visible = true
+		area.get_node("Control").MOUSE_FILTER_STOP
+		queue_free()
 	
 	# Look around
 	if mouse_captured and event is InputEventMouseMotion:
@@ -103,7 +110,7 @@ func _physics_process(delta: float) -> void:
 		position.y = lerp(position.y, grappling_pos.y, 0.02)
 	
 	var fps = Engine.get_frames_per_second()
-	print(fps)
+	fps_value.text = str(fps)
 	
 	# Use velocity to actually move
 	move_and_slide()
