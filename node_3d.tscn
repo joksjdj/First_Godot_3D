@@ -365,6 +365,9 @@ var keybind
 
 func _ready() -> void:
 	Engine.max_fps = 30
+	
+	var mode = $Control/Settings/window/display/OptionButton.selected
+	select_display_mode(mode)
 
 func _on_play_button_up():
 	print(\"Play pressed\")
@@ -407,6 +410,31 @@ func _on_vsync_button_pressed(source: BaseButton) -> void:
 	else:
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 		source.text = \"ON\"
+
+
+func _on_resolution_selected(index: int, source: BaseButton) -> void:
+	var res = int(source.text)
+	var short
+	if res == 3840:
+		short =  res * (9.0 / 16)
+		get_viewport().content_scale_size  = Vector2i(res, short)
+	else:
+		short =  res * (16.0 / 9)
+		get_viewport().content_scale_size  = Vector2i(short, res)
+	print(get_window().content_scale_size)
+
+
+func select_display_mode(index: int):
+	if index == 0:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	elif index == 1:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+	elif index == 2:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+	
+func _on_option_button_item_selected(index: int) -> void:
+	select_display_mode(index)
 "
 
 [node name="Main" type="Node3D" unique_id=1704034660]
@@ -722,6 +750,49 @@ text = "Vsync: "
 layout_mode = 2
 text = "ON"
 
+[node name="window" type="VBoxContainer" parent="Area2D/Control/Settings" unique_id=98887800]
+layout_mode = 2
+
+[node name="display" type="HBoxContainer" parent="Area2D/Control/Settings/window" unique_id=448392948]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Area2D/Control/Settings/window/display" unique_id=916011600]
+layout_mode = 2
+text = "Window display: "
+
+[node name="OptionButton" type="OptionButton" parent="Area2D/Control/Settings/window/display" unique_id=953700948]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Fullscreen"
+popup/item_0/id = 0
+popup/item_1/text = "Maximized"
+popup/item_1/id = 2
+popup/item_2/text = "Windowed"
+popup/item_2/id = 1
+
+[node name="resolution" type="HBoxContainer" parent="Area2D/Control/Settings/window" unique_id=137183983]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Area2D/Control/Settings/window/resolution" unique_id=696531553]
+layout_mode = 2
+text = "Resolution: "
+
+[node name="OptionButton" type="OptionButton" parent="Area2D/Control/Settings/window/resolution" unique_id=162273832]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "1080"
+popup/item_0/id = 0
+popup/item_1/text = "1440"
+popup/item_1/id = 1
+popup/item_2/text = "3840"
+popup/item_2/id = 2
+
+[node name="Label2" type="Label" parent="Area2D/Control/Settings/window/resolution" unique_id=2025114973]
+layout_mode = 2
+text = "P"
+
 [node name="Input" type="VBoxContainer" parent="Area2D/Control/Settings" unique_id=657554954]
 layout_mode = 2
 
@@ -800,6 +871,8 @@ horizontal_alignment = 1
 [connection signal="button_up" from="Area2D/Control/VBoxContainer/Play" to="Area2D" method="_on_play_button_up"]
 [connection signal="value_changed" from="Area2D/Control/Settings/fps/HSlider" to="Area2D" method="_on_fps_value_changed"]
 [connection signal="pressed" from="Area2D/Control/Settings/vsync/Button" to="Area2D" method="_on_vsync_button_pressed" flags=18]
+[connection signal="item_selected" from="Area2D/Control/Settings/window/display/OptionButton" to="Area2D" method="_on_option_button_item_selected"]
+[connection signal="item_selected" from="Area2D/Control/Settings/window/resolution/OptionButton" to="Area2D" method="_on_resolution_selected" flags=18]
 [connection signal="pressed" from="Area2D/Control/Settings/Input/layer/Forward/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
 [connection signal="pressed" from="Area2D/Control/Settings/Input/layer2/Left/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
 [connection signal="pressed" from="Area2D/Control/Settings/Input/layer2/Backwards/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]

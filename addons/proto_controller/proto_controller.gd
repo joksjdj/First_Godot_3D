@@ -36,9 +36,9 @@ extends CharacterBody3D
 ## Name of Input Action to Sprint.
 @export var input_sprint : String = "Sprint"
 
-## Bullet
-@export var object_to_spawn: PackedScene
-## Grappling
+## Bullet & Grappling
+@onready var camera = $Head/Camera3D
+
 var grappling_pos
 var is_grappling = false
 
@@ -90,7 +90,6 @@ func _physics_process(delta: float) -> void:
 			smooth_fov(85, 0.5)
 	else:
 		move_speed = base_speed
-		var camera = $Head/Camera3D
 		smooth_fov(75, 0.5)
 
 	# Apply desired movement to velocity
@@ -131,13 +130,11 @@ func rotate_look(rot_input : Vector2):
 func capture_mouse():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	mouse_captured = true
-
 func release_mouse():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	mouse_captured = false
 
 func smooth_fov(target_fov: float, duration: float = 0.5):
-	var camera = $Head/Camera3D
 	var tween = create_tween()
 	tween.tween_property(camera, "fov", target_fov, duration)
 
@@ -148,8 +145,8 @@ func _input(event):
 	if event.is_action_pressed("MouseRight"):
 		grappling()
 		
+@export var object_to_spawn: PackedScene
 func spawn_bullet():
-	var camera = $Head/Camera3D
 	var obj = object_to_spawn.instantiate()
 	var area = get_parent().get_node("Area3D")
 	area.add_child(obj)
@@ -158,7 +155,6 @@ func spawn_bullet():
 
 @export var grappling_to_spawn: PackedScene
 func grappling():
-	var camera = $Head/Camera3D
 	var obj = grappling_to_spawn.instantiate()
 	add_child(obj)
 	obj.global_transform.basis = camera.global_transform.basis.orthonormalized()
