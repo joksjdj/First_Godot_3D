@@ -683,26 +683,22 @@ character_to_spawn = ExtResource("2_noarx")
 
 [node name="Camera2D" type="Camera2D" parent="Area2D" unique_id=26550593]
 
-[node name="Control" type="Control" parent="Area2D" unique_id=1372042522]
+[node name="Control" type="Control" parent="Area2D" unique_id=1878755779]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Area2D/Control" unique_id=1704244165]
 layout_mode = 0
-offset_left = 408.0
-offset_top = 216.0
-offset_right = 561.0
-offset_bottom = 307.0
+offset_left = 388.0
+offset_top = 196.0
+offset_right = 541.0
+offset_bottom = 287.0
 
 [node name="Play" type="Button" parent="Area2D/Control/VBoxContainer" unique_id=778631580]
 layout_mode = 2
@@ -712,10 +708,10 @@ text = "PLAY"
 
 [node name="Settings" type="VBoxContainer" parent="Area2D/Control" unique_id=28052725]
 layout_mode = 0
-offset_left = -532.0
-offset_top = -275.0
-offset_right = -492.0
-offset_bottom = -235.0
+offset_left = -552.0
+offset_top = -295.0
+offset_right = -230.0
+offset_bottom = 261.0
 
 [node name="h1" type="Label" parent="Area2D/Control/Settings" unique_id=413273084]
 layout_mode = 2
@@ -874,10 +870,10 @@ horizontal_alignment = 1
 
 [node name="quit" type="Button" parent="Area2D/Control" unique_id=1416584292]
 layout_mode = 0
-offset_left = 472.0
-offset_top = -292.0
-offset_right = 583.0
-offset_bottom = -215.0
+offset_left = 452.0
+offset_top = -312.0
+offset_right = 563.0
+offset_bottom = -235.0
 theme_override_font_sizes/font_size = 50
 text = "EXIT"
 

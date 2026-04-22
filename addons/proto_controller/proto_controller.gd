@@ -5,7 +5,9 @@
 
 extends CharacterBody3D
 
-var health = 50
+var health = 30
+
+var thread = Thread.new()
 
 ## Can we move around?
 @export var can_move : bool = true
@@ -54,11 +56,13 @@ var freeflying : bool = false
 @onready var collider: CollisionShape3D = $Collider
 
 ## UI Elements
-@onready var fps_value: Label = $CanvasLayer/Control/VBoxContainer/fps/value
+@onready var fps_value: Label = $CanvasLayer/TextureRect/VBoxContainer/fps/value
 
 func _ready() -> void:
 	look_rotation.y = rotation.y
 	look_rotation.x = head.rotation.x
+	
+	thread.start(_health_monitor)
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Mouse capturing
@@ -109,20 +113,38 @@ func _physics_process(delta: float) -> void:
 		position.x = lerp(position.x, grappling_pos.x, 0.01)
 		position.z = lerp(position.z, grappling_pos.z, 0.01)
 		position.y = lerp(position.y, grappling_pos.y, 0.02)
+	# Use velocity to actually move
+	move_and_slide()
 	
 	var fps = Engine.get_frames_per_second()
 	fps_value.text = str(fps)
-	
-	if health < 1:
-		release_mouse()
-		var area = get_parent().get_node("Area2D")
-		area.visible = true
-		area.get_node("Control").MOUSE_FILTER_STOP
-		queue_free()
-	
-	# Use velocity to actually move
-	move_and_slide()
+		
+@onready var hearts = $CanvasLayer/TextureRect/health
+@onready var hearts_left = hearts.get_child_count()
+var await_health_change = false
+func _health_monitor():
+	var alive = true
+	while alive:
+		if health < 1:
+			alive = false
+			call_deferred("death")
+			
+		if health / 10 < hearts_left and !await_health_change:
+			await_health_change = true
+			call_deferred("health_change")
+			
+func death():
+	release_mouse()
+	var area = get_parent().get_node("Area2D")
+	area.visible = true
+	area.get_node("Control").MOUSE_FILTER_STOP
+	queue_free()
 
+func health_change():
+	hearts_left -= 1
+	var heart = hearts.get_child(hearts.get_child_count() - 1)
+	heart.queue_free()
+	await_health_change = false
 
 ## Rotate us to look around.
 ## Base of controller rotates around y (left/right). Head rotates around x (up/down).

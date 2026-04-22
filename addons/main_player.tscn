@@ -63,7 +63,85 @@ mesh = SubResource("BoxMesh_4arys")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=530873172]
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer" unique_id=1563939277]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer" unique_id=1511025269]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/TextureRect" unique_id=56920900]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 168.0
+offset_bottom = 204.0
+
+[node name="fps" type="HBoxContainer" parent="CanvasLayer/TextureRect/VBoxContainer" unique_id=391110111]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/TextureRect/VBoxContainer/fps" unique_id=444603497]
+layout_mode = 2
+text = "FPS: "
+
+[node name="value" type="Label" parent="CanvasLayer/TextureRect/VBoxContainer/fps" unique_id=1459085852]
+layout_mode = 2
+
+[node name="health" type="HBoxContainer" parent="CanvasLayer/TextureRect" unique_id=1256854118]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.99700004
+anchor_right = 0.99700004
+offset_left = -264.54407
+offset_top = 4.0
+offset_right = -0.5440674
+offset_bottom = 140.0
+alignment = 2
+
+[node name="heart" type="Node2D" parent="CanvasLayer/TextureRect/health" unique_id=1667795244]
+position = Vector2(200, 80)
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/health/heart" unique_id=715525700]
+position = Vector2(135, -240)
+points = PackedVector2Array(-136, 280, -200, 216, -168, 184, -136, 216, -104, 184, -72, 216)
+closed = true
+default_color = Color(0, 0, 0, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="CanvasLayer/TextureRect/health/heart/Line2D" unique_id=1454075938]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
+
+[node name="heart2" type="Node2D" parent="CanvasLayer/TextureRect/health" unique_id=1285167502]
+position = Vector2(100, 80)
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/health/heart2" unique_id=721113086]
+position = Vector2(135, -240)
+points = PackedVector2Array(-136, 280, -200, 216, -168, 184, -136, 216, -104, 184, -72, 216)
+closed = true
+default_color = Color(0, 0, 0, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="CanvasLayer/TextureRect/health/heart2/Line2D" unique_id=1038733475]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
+
+[node name="heart3" type="Node2D" parent="CanvasLayer/TextureRect/health" unique_id=403562174]
+position = Vector2(0, 80)
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/health/heart3" unique_id=2116040827]
+position = Vector2(135, -240)
+points = PackedVector2Array(-136, 280, -200, 216, -168, 184, -136, 216, -104, 184, -72, 216)
+closed = true
+default_color = Color(0, 0, 0, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="CanvasLayer/TextureRect/health/heart3/Line2D" unique_id=334098356]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
+
+[node name="Container" type="Container" parent="CanvasLayer/TextureRect" unique_id=447502418]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -76,61 +154,33 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Node2D" type="Node2D" parent="CanvasLayer/TextureRect" unique_id=1907562681]
-position = Vector2(556, 304)
+[node name="Corsair" type="Node2D" parent="CanvasLayer/TextureRect/Container" unique_id=1907562681]
+position = Vector2(20, 20)
 
-[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/Node2D" unique_id=1022014041]
-position = Vector2(-595.63635, -326.57748)
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=1022014041]
+position = Vector2(-59.636353, -42.577484)
 scale = Vector2(1.0909091, 1.3333334)
 points = PackedVector2Array(32, 32, 48, 32)
 width = 3.0
 default_color = Color(0, 0, 0, 1)
 
-[node name="Line2D2" type="Line2D" parent="CanvasLayer/TextureRect/Node2D" unique_id=17038708]
-position = Vector2(-546.1818, -326.57748)
+[node name="Line2D2" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=17038708]
+position = Vector2(-10.181824, -42.577484)
 scale = Vector2(1.0909091, 1.3333334)
 points = PackedVector2Array(16, 32, 32, 32)
 width = 3.0
 default_color = Color(0, 0, 0, 1)
 
-[node name="Line2D3" type="Line2D" parent="CanvasLayer/TextureRect/Node2D" unique_id=1381242553]
-position = Vector2(-578.6667, -293.95078)
+[node name="Line2D3" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=1381242553]
+position = Vector2(-42.666687, -9.950775)
 scale = Vector2(1.3333334, 1.0868558)
 points = PackedVector2Array(32, 16, 32, 23.912376, 32, 31.910828, 32, 32)
 width = 3.0
 default_color = Color(0, 0, 0, 1)
 
-[node name="Line2D4" type="Line2D" parent="CanvasLayer/TextureRect/Node2D" unique_id=1146667014]
-position = Vector2(-578.6666, -343.52847)
+[node name="Line2D4" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=1146667014]
+position = Vector2(-42.666687, -59.528473)
 scale = Vector2(1.3333334, 1.0905421)
 points = PackedVector2Array(32, 40, 32, 32, 32, 31.910828, 32, 48)
 width = 3.0
 default_color = Color(0, 0, 0, 1)
-
-[node name="Control" type="Control" parent="CanvasLayer" unique_id=2071341533]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control" unique_id=56920900]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = -11.500001
-anchor_top = -3.9
-anchor_right = -11.500001
-anchor_bottom = -3.9
-offset_left = 476.00003
-offset_top = 164.0
-offset_right = 616.0
-offset_bottom = 288.0
-
-[node name="fps" type="HBoxContainer" parent="CanvasLayer/Control/VBoxContainer" unique_id=391110111]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/fps" unique_id=444603497]
-layout_mode = 2
-text = "FPS: "
-
-[node name="value" type="Label" parent="CanvasLayer/Control/VBoxContainer/fps" unique_id=1459085852]
-layout_mode = 2
