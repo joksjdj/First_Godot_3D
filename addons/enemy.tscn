@@ -9,6 +9,7 @@ script/source = "extends CharacterBody3D
 var health = 3
 @onready var Head = $Head
 @onready var cooldown = 0
+@onready var detect_player = false
 
 func _ready():
 	while true:
@@ -24,16 +25,21 @@ func _physics_process(delta: float) -> void:
 		
 	move_and_slide()
 	
-	var player = get_parent().get_parent().get_node_or_null(\"MainPlayer\")
-	if player:
-		$Head.look_at(player.get_node(\"Head\").global_position, Vector3.UP)
+	if detect_player:
+		var player = get_parent().get_parent().get_node_or_null(\"MainPlayer\")
+		if player:
+			$Head.look_at(player.get_node(\"Head\").global_position, Vector3.UP)
+		
+		if $Head/Aim.is_colliding():
+			var hit = $Head/Aim.get_collider()
+			if hit:
+				if hit.name == \"MainPlayer\" and cooldown < 1:
+					cooldown = 2
+					spawn_bullet()
+		
+	global_transform.basis = Head.global_transform.basis.orthonormalized()
+	global_position = global_transform.origin + -global_transform.basis.z * 0.05
 	
-	if $Head/RayCast3D.is_colliding():
-		var hit = $Head/RayCast3D.get_collider()
-		if hit:
-			if hit.name == \"MainPlayer\" and cooldown < 1:
-				cooldown = 2
-				spawn_bullet()
 	
 @export var object_to_spawn: PackedScene
 func spawn_bullet():
@@ -42,6 +48,22 @@ func spawn_bullet():
 	obj.global_transform.basis = Head.global_transform.basis.orthonormalized()
 	obj.global_position = Head.global_transform.origin + -Head.global_transform.basis.z
 	
+
+func _on_area_3d_body_entered(body) -> void:
+	print(\"detected\")
+	detect_player = true
+func _on_area_3d_body_exited(body) -> void:
+	print(\"detected\")
+	detect_player = false
+
+var turning = false
+func _on_obsticle_body_entered(body) -> void:
+	turning = true
+	if turning:
+		var t = Head.global_transform
+		t.basis = t.basis.rotated(Vector3.UP, deg_to_rad(90))
+		global_transform = t
+		turning = false
 "
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_upa07"]
@@ -55,6 +77,12 @@ albedo_color = Color(0.91806, 0.575202, 0.222449, 1)
 radius = 0.4
 height = 1.8
 
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_upa07"]
+length = 3.0
+
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_5ovji"]
+length = 3.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ovji"]
 albedo_color = Color(0.13, 0.9130001, 1, 1)
 
@@ -62,8 +90,12 @@ albedo_color = Color(0.13, 0.9130001, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0weul"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_upa07"]
+radius = 10.0
+
 [node name="Enemy" type="CharacterBody3D" unique_id=802950666]
 transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, 0, 0)
+collision_mask = 17
 slide_on_ceiling = false
 script = SubResource("GDScript_upa07")
 object_to_spawn = ExtResource("1_upa07")
@@ -72,11 +104,25 @@ object_to_spawn = ExtResource("1_upa07")
 transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 1.1182969, 0.020645147)
 shape = SubResource("CylinderShape3D_upa07")
 
-[node name="Mesh" type="MeshInstance3D" parent="." unique_id=777808813]
+[node name="Body" type="MeshInstance3D" parent="." unique_id=777808813]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09711, 0)
 material_override = SubResource("StandardMaterial3D_fcg7d")
 gi_mode = 2
 mesh = SubResource("CapsuleMesh_upa07")
+
+[node name="Ground" type="Area3D" parent="Body" unique_id=1883766893]
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Ground" unique_id=122627152]
+transform = Transform3D(1.0000001, 0, 0, 0, -0.86602545, -0.5000001, 0, 0.5000001, -0.86602545, 0, 0, 0)
+shape = SubResource("SeparationRayShape3D_upa07")
+
+[node name="Obsticle" type="Area3D" parent="Body" unique_id=1138479424]
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Obsticle" unique_id=1338388187]
+transform = Transform3D(1.0000001, 0, 0, 0, -1.0000001, -8.7422784e-08, 0, 8.7422784e-08, -1.0000001, 0, 0, 0)
+shape = SubResource("SeparationRayShape3D_5ovji")
 
 [node name="Head" type="Node3D" parent="." unique_id=1046566719]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
@@ -98,6 +144,18 @@ transform = Transform3D(0.21, 0, 0, 0, 0.165, 0, 0, 0, 0.396, 0, 0.03798902, -0.
 material_overlay = SubResource("StandardMaterial3D_5ovji")
 mesh = SubResource("BoxMesh_0weul")
 
-[node name="RayCast3D" type="RayCast3D" parent="Head" unique_id=927069417]
+[node name="Aim" type="RayCast3D" parent="Head" unique_id=927069417]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
-target_position = Vector3(0, -20, 0)
+target_position = Vector3(0, -10, 0)
+
+[node name="EnemyDetect" type="Area3D" parent="." unique_id=439488297]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyDetect" unique_id=2017337946]
+transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 1.1764706, 0)
+shape = SubResource("SphereShape3D_upa07")
+
+[connection signal="body_entered" from="Body/Obsticle" to="." method="_on_obsticle_body_entered"]
+[connection signal="body_entered" from="EnemyDetect" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="EnemyDetect" to="." method="_on_area_3d_body_exited"]

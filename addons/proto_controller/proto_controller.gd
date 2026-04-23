@@ -143,6 +143,7 @@ func health_change():
 	
 	
 func free_queue():
+	alive = false
 	release_mouse()
 	var area = get_parent().get_node("Area2D")
 	area.visible = true

@@ -24,6 +24,8 @@ albedo_color = Color(0.13, 0.9130001, 1, 1)
 
 [node name="MainPlayer" type="CharacterBody3D" unique_id=1996959735]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 7)
+collision_layer = 17
+collision_mask = 17
 script = ExtResource("1_8poij")
 object_to_spawn = ExtResource("2_jo1w2")
 grappling_to_spawn = ExtResource("3_c7qvv")
