@@ -5,9 +5,9 @@
 
 extends CharacterBody3D
 
-var health = 30
+@onready var health = 3
 
-var thread = Thread.new()
+@onready var thread = Thread.new()
 
 ## Can we move around?
 @export var can_move : bool = true
@@ -43,13 +43,13 @@ var thread = Thread.new()
 ## Bullet & Grappling
 @onready var camera = $Head/Camera3D
 
-var grappling_pos
-var is_grappling = false
+@onready var grappling_pos
+@onready var is_grappling = false
 
-var mouse_captured : bool = false
-var look_rotation : Vector2
-var move_speed : float = 0.0
-var freeflying : bool = false
+@onready var mouse_captured : bool = false
+@onready var look_rotation : Vector2
+@onready var move_speed : float = 0.0
+@onready var freeflying : bool = false
 
 ## IMPORTANT REFERENCES
 @onready var head: Node3D = $Head
@@ -69,11 +69,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		capture_mouse()
 	if Input.is_key_pressed(KEY_ESCAPE):
-		release_mouse()
-		var area = get_parent().get_node("Area2D")
-		area.visible = true
-		area.get_node("Control").MOUSE_FILTER_STOP
-		queue_free()
+		free_queue()
 	
 	# Look around
 	if mouse_captured and event is InputEventMouseMotion:
@@ -119,32 +115,39 @@ func _physics_process(delta: float) -> void:
 	var fps = Engine.get_frames_per_second()
 	fps_value.text = str(fps)
 		
+
 @onready var hearts = $CanvasLayer/TextureRect/health
 @onready var hearts_left = hearts.get_child_count()
-var await_health_change = false
+@onready var await_health_change = false
+@onready var alive = true
 func _health_monitor():
-	var alive = true
 	while alive:
 		if health < 1:
 			alive = false
-			call_deferred("death")
+			call_deferred("free_queue")
 			
-		if health / 10 < hearts_left and !await_health_change:
+		if !alive:
+			return
+		
+		if health < hearts_left and !await_health_change:
 			await_health_change = true
 			call_deferred("health_change")
 			
-func death():
-	release_mouse()
-	var area = get_parent().get_node("Area2D")
-	area.visible = true
-	area.get_node("Control").MOUSE_FILTER_STOP
-	queue_free()
+		OS.delay_msec(50)
 
 func health_change():
 	hearts_left -= 1
 	var heart = hearts.get_child(hearts.get_child_count() - 1)
 	heart.queue_free()
 	await_health_change = false
+	
+	
+func free_queue():
+	release_mouse()
+	var area = get_parent().get_node("Area2D")
+	area.visible = true
+	area.get_node("Control").MOUSE_FILTER_STOP
+	queue_free()
 
 ## Rotate us to look around.
 ## Base of controller rotates around y (left/right). Head rotates around x (up/down).
@@ -158,6 +161,7 @@ func rotate_look(rot_input : Vector2):
 	head.transform.basis = Basis()
 	head.rotate_x(look_rotation.x)
 
+
 func capture_mouse():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	mouse_captured = true
@@ -165,9 +169,11 @@ func release_mouse():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	mouse_captured = false
 
+
 func smooth_fov(target_fov: float, duration: float = 0.5):
 	var tween = create_tween()
 	tween.tween_property(camera, "fov", target_fov, duration)
+
 
 func _input(event):
 	if event.is_action_pressed("MouseLeft"):

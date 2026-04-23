@@ -6,7 +6,7 @@
 resource_name = "Enemy"
 script/source = "extends CharacterBody3D
 
-var health = 30
+var health = 3
 @onready var Head = $Head
 @onready var cooldown = 0
 

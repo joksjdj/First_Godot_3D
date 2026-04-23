@@ -7,10 +7,10 @@ func _physics_process(delta: float) -> void:
 	if $RayCast3D.is_colliding():
 		var hit = $RayCast3D.get_collider()
 		if hit.name == \"MainPlayer\":
-			hit.health -= 10
+			hit.health -= 1
 			print(\"Hit:\", hit.name, \"| Health:\", hit.health)
 		elif hit.get_parent().name == \"Enemies\":
-			hit.health -= 10
+			hit.health -= 1
 			print(\"Hit:\", hit.name, \"| Health:\", hit.health)
 		else:
 			print(\"Hit:\", hit.name, \"|\", hit)

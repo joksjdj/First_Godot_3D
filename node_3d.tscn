@@ -685,13 +685,12 @@ character_to_spawn = ExtResource("2_noarx")
 
 [node name="Control" type="Control" parent="Area2D" unique_id=1878755779]
 layout_mode = 3
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
 grow_horizontal = 2
-grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Area2D/Control" unique_id=1704244165]
 layout_mode = 0
