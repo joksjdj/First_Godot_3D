@@ -29,6 +29,7 @@ func _physics_process(delta: float) -> void:
 		var player = get_parent().get_parent().get_node_or_null(\"MainPlayer\")
 		if player:
 			$Head.look_at(player.get_node(\"Head\").global_position, Vector3.UP)
+			global_rotation.y = Head.global_rotation.y
 		
 		if $Head/Aim.is_colliding():
 			var hit = $Head/Aim.get_collider()
@@ -36,9 +37,12 @@ func _physics_process(delta: float) -> void:
 				if hit.name == \"MainPlayer\" and cooldown < 1:
 					cooldown = 2
 					spawn_bullet()
+	else:
+		global_rotation.y = Head.global_rotation.y
+		global_position = global_transform.origin + -global_transform.basis.z * 0.05
 		
-	global_transform.basis = Head.global_transform.basis.orthonormalized()
-	global_position = global_transform.origin + -global_transform.basis.z * 0.05
+		if avoid_obsticle or not $Body/Ground.get_overlapping_bodies().is_empty():
+			rotate_detected()
 	
 	
 @export var object_to_spawn: PackedScene
@@ -56,18 +60,21 @@ func _on_area_3d_body_exited(body) -> void:
 	print(\"detected\")
 	detect_player = false
 
-var turning = false
+
+var avoid_obsticle = false
 func _on_obsticle_body_entered(body) -> void:
-	turning = true
-	if turning:
-		var t = Head.global_transform
-		t.basis = t.basis.rotated(Vector3.UP, deg_to_rad(90))
-		global_transform = t
-		turning = false
+	avoid_obsticle = true
+func _on_obsticle_body_exited(body) -> void:
+	avoid_obsticle = false
+
+func rotate_detected() -> void:
+	var t = global_transform
+	t.basis = Head.global_transform.basis.rotated(Vector3.UP, deg_to_rad(5))
+	global_transform = t
 "
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_upa07"]
-height = 1.3918753
+height = 1.467422
 radius = 0.33935547
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fcg7d"]
@@ -77,11 +84,11 @@ albedo_color = Color(0.91806, 0.575202, 0.222449, 1)
 radius = 0.4
 height = 1.8
 
-[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_upa07"]
-length = 3.0
+[sub_resource type="BoxShape3D" id="BoxShape3D_5ovji"]
+size = Vector3(0.595459, 0.47644043, 0.81103516)
 
-[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_5ovji"]
-length = 3.0
+[sub_resource type="BoxShape3D" id="BoxShape3D_upa07"]
+size = Vector3(1, 1.2489014, 1.5605469)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ovji"]
 albedo_color = Color(0.13, 0.9130001, 1, 1)
@@ -101,7 +108,7 @@ script = SubResource("GDScript_upa07")
 object_to_spawn = ExtResource("1_upa07")
 
 [node name="Enemy" type="CollisionShape3D" parent="." unique_id=1823100976]
-transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 1.1182969, 0.020645147)
+transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 1.0805237, 0.020645147)
 shape = SubResource("CylinderShape3D_upa07")
 
 [node name="Body" type="MeshInstance3D" parent="." unique_id=777808813]
@@ -114,15 +121,15 @@ mesh = SubResource("CapsuleMesh_upa07")
 collision_layer = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Ground" unique_id=122627152]
-transform = Transform3D(1.0000001, 0, 0, 0, -0.86602545, -0.5000001, 0, 0.5000001, -0.86602545, 0, 0, 0)
-shape = SubResource("SeparationRayShape3D_upa07")
+transform = Transform3D(1.0000002, 0, 0, 0, -1.0000002, 8.7422805e-08, 0, -8.7422805e-08, -1.0000002, 0.038452175, -1.0167581, -0.56798995)
+shape = SubResource("BoxShape3D_5ovji")
 
 [node name="Obsticle" type="Area3D" parent="Body" unique_id=1138479424]
 collision_layer = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Obsticle" unique_id=1338388187]
-transform = Transform3D(1.0000001, 0, 0, 0, -1.0000001, -8.7422784e-08, 0, 8.7422784e-08, -1.0000001, 0, 0, 0)
-shape = SubResource("SeparationRayShape3D_5ovji")
+transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 1.6718655e-14, 0, -1.6718655e-14, 1.0000002, 0, 0.124450445, -1.2792745)
+shape = SubResource("BoxShape3D_upa07")
 
 [node name="Head" type="Node3D" parent="." unique_id=1046566719]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
@@ -157,5 +164,6 @@ transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 1.
 shape = SubResource("SphereShape3D_upa07")
 
 [connection signal="body_entered" from="Body/Obsticle" to="." method="_on_obsticle_body_entered"]
+[connection signal="body_exited" from="Body/Obsticle" to="." method="_on_obsticle_body_exited"]
 [connection signal="body_entered" from="EnemyDetect" to="." method="_on_area_3d_body_entered"]
 [connection signal="body_exited" from="EnemyDetect" to="." method="_on_area_3d_body_exited"]
