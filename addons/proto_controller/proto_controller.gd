@@ -20,11 +20,11 @@ extends CharacterBody3D
 ## Look around rotation speed.
 @export var look_speed : float = 0.002
 ## Normal speed.
-@export var base_speed : float = 7.0
+@export var base_speed : float = 8.0
 ## Speed of jump.
 @export var jump_velocity : float = 9
 ## How fast do we run?
-@export var sprint_speed : float = 10.0
+@export var sprint_speed : float = 11.0
 
 @export_group("Input Actions")
 ## Name of Input Action to move Left.
@@ -106,9 +106,7 @@ func _physics_process(delta: float) -> void:
 			velocity.z = move_toward(velocity.z, 0, move_speed)
 		
 	if is_grappling == true:
-		position.x = lerp(position.x, grappling_pos.x, 0.01)
-		position.z = lerp(position.z, grappling_pos.z, 0.01)
-		position.y = lerp(position.y, grappling_pos.y, 0.02)
+		grappling_action()
 	# Use velocity to actually move
 	move_and_slide()
 	
@@ -197,3 +195,7 @@ func grappling():
 	add_child(obj)
 	obj.global_transform.basis = camera.global_transform.basis.orthonormalized()
 	obj.global_position = camera.global_transform.origin + -camera.global_transform.basis.z
+func grappling_action():
+		position.x = lerp(position.x, grappling_pos.x, 0.01)
+		position.z = lerp(position.z, grappling_pos.z, 0.01)
+		position.y = lerp(position.y, grappling_pos.y, 0.02)

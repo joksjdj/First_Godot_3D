@@ -1,0 +1,12 @@
+{
+	"fps": 70,
+	"keybind": {
+		"Backwards": 83,
+		"Forward": 87,
+		"Left": 65,
+		"Right": 68
+	},
+	"resolution": 1080,
+	"vsync": "OFF",
+	"window_display": 0
+}
