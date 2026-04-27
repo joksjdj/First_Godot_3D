@@ -507,6 +507,18 @@ func _on_quit_pressed() -> void:
 	get_tree().quit()
 "
 
+[sub_resource type="SphereMesh" id="SphereMesh_noarx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tuemg"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_i0g27"]
+material = SubResource("StandardMaterial3D_tuemg")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ealrb"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_jsnrv"]
+
 [node name="Main" type="Node3D" unique_id=1704034660]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=86343598]
@@ -771,15 +783,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Area2D/Control" unique_id=1704244165]
+[node name="Play" type="Button" parent="Area2D/Control" unique_id=778631580]
 layout_mode = 0
 offset_left = 388.0
 offset_top = 196.0
 offset_right = 541.0
 offset_bottom = 287.0
-
-[node name="Play" type="Button" parent="Area2D/Control/VBoxContainer" unique_id=778631580]
-layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 60
 text = "PLAY"
@@ -871,97 +880,182 @@ popup/item_2/id = 2
 layout_mode = 2
 text = "P"
 
-[node name="Input" type="VBoxContainer" parent="Area2D/Control/Settings" unique_id=657554954]
-layout_mode = 2
+[node name="Input" type="VBoxContainer" parent="Area2D/Control" unique_id=657554954]
+layout_mode = 0
+offset_left = -128.0
+offset_top = -204.0
+offset_right = 194.0
+offset_bottom = 143.0
 
-[node name="layer" type="VBoxContainer" parent="Area2D/Control/Settings/Input" unique_id=1961359427]
+[node name="layer" type="VBoxContainer" parent="Area2D/Control/Input" unique_id=1961359427]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="Area2D/Control/Settings/Input/layer" unique_id=1760887109]
+[node name="Label" type="Label" parent="Area2D/Control/Input/layer" unique_id=1760887109]
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "↑"
 horizontal_alignment = 1
 
-[node name="Forward" type="HBoxContainer" parent="Area2D/Control/Settings/Input/layer" unique_id=759722634 groups=["InputButtons"]]
+[node name="Forward" type="HBoxContainer" parent="Area2D/Control/Input/layer" unique_id=759722634 groups=["InputButtons"]]
 layout_mode = 2
 alignment = 1
 
-[node name="keybind" type="Button" parent="Area2D/Control/Settings/Input/layer/Forward" unique_id=1596018297 groups=["InputButtons"]]
+[node name="keybind" type="Button" parent="Area2D/Control/Input/layer/Forward" unique_id=1596018297 groups=["InputButtons"]]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "W"
 
-[node name="layer2" type="HBoxContainer" parent="Area2D/Control/Settings/Input" unique_id=2008466470]
+[node name="layer2" type="HBoxContainer" parent="Area2D/Control/Input" unique_id=2008466470]
 layout_mode = 2
 alignment = 1
 
-[node name="Left" type="HBoxContainer" parent="Area2D/Control/Settings/Input/layer2" unique_id=618587572 groups=["InputButtons"]]
+[node name="Left" type="HBoxContainer" parent="Area2D/Control/Input/layer2" unique_id=618587572 groups=["InputButtons"]]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="Area2D/Control/Settings/Input/layer2/Left" unique_id=1563041349]
+[node name="Label" type="Label" parent="Area2D/Control/Input/layer2/Left" unique_id=1563041349]
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "←"
 
-[node name="keybind" type="Button" parent="Area2D/Control/Settings/Input/layer2/Left" unique_id=710768667 groups=["InputButtons"]]
+[node name="keybind" type="Button" parent="Area2D/Control/Input/layer2/Left" unique_id=710768667 groups=["InputButtons"]]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "A"
 
-[node name="Backwards" type="VBoxContainer" parent="Area2D/Control/Settings/Input/layer2" unique_id=302137592 groups=["InputButtons"]]
+[node name="Backwards" type="VBoxContainer" parent="Area2D/Control/Input/layer2" unique_id=302137592 groups=["InputButtons"]]
 layout_mode = 2
 
-[node name="keybind" type="Button" parent="Area2D/Control/Settings/Input/layer2/Backwards" unique_id=1818102066 groups=["InputButtons"]]
+[node name="keybind" type="Button" parent="Area2D/Control/Input/layer2/Backwards" unique_id=1818102066 groups=["InputButtons"]]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "S"
 
-[node name="Right" type="HBoxContainer" parent="Area2D/Control/Settings/Input/layer2" unique_id=131566930 groups=["InputButtons"]]
+[node name="Right" type="HBoxContainer" parent="Area2D/Control/Input/layer2" unique_id=131566930 groups=["InputButtons"]]
 layout_mode = 2
 
-[node name="keybind" type="Button" parent="Area2D/Control/Settings/Input/layer2/Right" unique_id=2094053597 groups=["InputButtons"]]
+[node name="keybind" type="Button" parent="Area2D/Control/Input/layer2/Right" unique_id=2094053597 groups=["InputButtons"]]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "D"
 
-[node name="Label" type="Label" parent="Area2D/Control/Settings/Input/layer2/Right" unique_id=1723354278]
+[node name="Label" type="Label" parent="Area2D/Control/Input/layer2/Right" unique_id=1723354278]
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "→"
 
-[node name="layer3" type="VBoxContainer" parent="Area2D/Control/Settings/Input" unique_id=2130103613]
+[node name="layer3" type="VBoxContainer" parent="Area2D/Control/Input" unique_id=2130103613]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="Area2D/Control/Settings/Input/layer3" unique_id=232250758]
+[node name="Label" type="Label" parent="Area2D/Control/Input/layer3" unique_id=232250758]
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "↓"
 horizontal_alignment = 1
 
+[node name="Account" type="VBoxContainer" parent="Area2D/Control" unique_id=794928378]
+layout_mode = 0
+offset_left = 296.0
+offset_top = -210.0
+offset_right = 516.0
+offset_bottom = 146.0
+
+[node name="Profile" type="Container" parent="Area2D/Control/Account" unique_id=374519470]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+
+[node name="Profile" type="Node2D" parent="Area2D/Control/Account/Profile" unique_id=950568677]
+position = Vector2(110, 120)
+
+[node name="Outline" type="MeshInstance2D" parent="Area2D/Control/Account/Profile/Profile" unique_id=1346262516]
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+scale = Vector2(204.00002, 204.00002)
+mesh = SubResource("SphereMesh_noarx")
+
+[node name="Background" type="MeshInstance2D" parent="Area2D/Control/Account/Profile/Profile/Outline" unique_id=1405255789]
+self_modulate = Color(0.54, 0.54, 0.54, 1)
+clip_children = 2
+scale = Vector2(0.83333325, 0.83333325)
+mesh = SubResource("SphereMesh_noarx")
+
+[node name="Human" type="MeshInstance2D" parent="Area2D/Control/Account/Profile/Profile/Outline/Background" unique_id=289730950]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(0, -0.135)
+scale = Vector2(0.33, 0.33)
+mesh = SubResource("SphereMesh_i0g27")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="Area2D/Control/Account/Profile/Profile/Outline/Background/Human" unique_id=596148719]
+position = Vector2(0, 1.83)
+scale = Vector2(1.495, 1.495)
+mesh = SubResource("CapsuleMesh_ealrb")
+
+[node name="Info" type="VBoxContainer" parent="Area2D/Control/Account" unique_id=1464632922]
+layout_mode = 2
+alignment = 1
+
+[node name="Username" type="HBoxContainer" parent="Area2D/Control/Account/Info" unique_id=739589781]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Area2D/Control/Account/Info/Username" unique_id=390910200]
+layout_mode = 2
+text = "Username: "
+
+[node name="value" type="Label" parent="Area2D/Control/Account/Info/Username" unique_id=805337304]
+layout_mode = 2
+text = "Placeholder"
+
+[node name="Created" type="HBoxContainer" parent="Area2D/Control/Account/Info" unique_id=1976290409]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Area2D/Control/Account/Info/Created" unique_id=474483902]
+layout_mode = 2
+text = "Created: "
+
+[node name="value" type="Label" parent="Area2D/Control/Account/Info/Created" unique_id=118830916]
+layout_mode = 2
+text = "Placeholder"
+
+[node name="Highscore" type="HBoxContainer" parent="Area2D/Control/Account/Info" unique_id=1200281368]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Area2D/Control/Account/Info/Highscore" unique_id=203286193]
+layout_mode = 2
+text = "Highscore: "
+
+[node name="value" type="Label" parent="Area2D/Control/Account/Info/Highscore" unique_id=1110285441]
+layout_mode = 2
+text = "Placeholder"
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="Area2D/Control/Account" unique_id=564249403]
+self_modulate = Color(0.19, 0.19, 0.19, 1)
+show_behind_parent = true
+position = Vector2(110.00001, 182.87498)
+scale = Vector2(263.99994, 378.24997)
+mesh = SubResource("BoxMesh_jsnrv")
+
 [node name="quit" type="Button" parent="Area2D/Control" unique_id=1416584292]
 layout_mode = 0
-offset_left = 452.0
-offset_top = -312.0
-offset_right = 563.0
-offset_bottom = -235.0
+offset_left = 428.0
+offset_top = -308.0
+offset_right = 539.0
+offset_bottom = -231.0
 theme_override_font_sizes/font_size = 50
 text = "EXIT"
 
-[connection signal="button_up" from="Area2D/Control/VBoxContainer/Play" to="Area2D" method="_on_play_button_up"]
+[connection signal="button_up" from="Area2D/Control/Play" to="Area2D" method="_on_play_button_up"]
 [connection signal="drag_ended" from="Area2D/Control/Settings/fps/HSlider" to="Area2D" method="_on_h_slider_drag_ended" flags=18]
 [connection signal="pressed" from="Area2D/Control/Settings/vsync/Button" to="Area2D" method="_on_vsync_button_pressed"]
 [connection signal="item_selected" from="Area2D/Control/Settings/window/display/OptionButton" to="Area2D" method="_on_option_button_item_selected"]
 [connection signal="item_selected" from="Area2D/Control/Settings/window/resolution/OptionButton" to="Area2D" method="_on_resolution_selected" flags=18]
-[connection signal="pressed" from="Area2D/Control/Settings/Input/layer/Forward/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
-[connection signal="pressed" from="Area2D/Control/Settings/Input/layer2/Left/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
-[connection signal="pressed" from="Area2D/Control/Settings/Input/layer2/Backwards/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
-[connection signal="pressed" from="Area2D/Control/Settings/Input/layer2/Right/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
+[connection signal="pressed" from="Area2D/Control/Input/layer/Forward/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
+[connection signal="pressed" from="Area2D/Control/Input/layer2/Left/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
+[connection signal="pressed" from="Area2D/Control/Input/layer2/Backwards/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
+[connection signal="pressed" from="Area2D/Control/Input/layer2/Right/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
 [connection signal="pressed" from="Area2D/Control/quit" to="Area2D" method="_on_quit_pressed"]
