@@ -9,21 +9,15 @@ script/source = "extends Node3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var spawn = get_parent().get_node(\"Area3D\").get_node(\"SpawnPoint\")
+	var spawn_area = get_parent().get_node(\"Area3D\").get_node(\"SpawnPoint\")
 	
-	var points = spawn.get_children()
-	points.shuffle()
+	var points = spawn_area.get_children()
 
-	for i in range(7):
-		if points.is_empty():
-			break
-
+	for spawn in points:
 		var enemy = enemy_to_spawn.instantiate()
-		var random_spawn = points.pop_back()  # removes AND returns last element
-
-		add_child(enemy)
-		enemy.global_position = random_spawn.global_position
-		random_spawn.queue_free()
+		spawn.add_child(enemy)
+		enemy.walk_path = spawn.get_node(\"Path3D\").get_node(\"PathFollow3D\")
+		enemy.global_transform = spawn.get_node(\"Path3D\").get_node(\"PathFollow3D\").global_transform
 "
 
 [node name="Enemies" type="Node3D" unique_id=1916064014]

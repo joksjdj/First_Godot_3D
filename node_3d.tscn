@@ -361,6 +361,102 @@ _surfaces = [{
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_r3fl7"]
 data = PackedVector3Array(-48.083298, -1, -48.083298, -68, -1, 0, 0, -1, 0, -68, -1, 0, -48.083298, -1, -48.083298, -48.083298, 1, -48.083298, 0, -1, -68, -48.083298, -1, -48.083298, 0, -1, 0, -48.083298, -1, -48.083298, 0, -1, -68, 0, 1, -68, -68, -1, 0, -48.083298, -1, 48.083298, 0, -1, 0, -48.083298, -1, 48.083298, -68, -1, 0, -68, 1, 0, -48.083298, -1, 48.083298, 0, -1, 68, 0, -1, 0, 0, -1, 68, -48.083298, -1, 48.083298, -48.083298, 1, 48.083298, -48.083298, 1, -48.083298, -68, 1, 0, -68, -1, 0, -68, 1, 0, -48.083298, 1, -48.083298, 0, 1, 0, 0, 1, -68, -48.083298, 1, -48.083298, -48.083298, -1, -48.083298, -48.083298, 1, -48.083298, 0, 1, -68, 0, 1, 0, -68, 1, 0, -48.083298, 1, 48.083298, -48.083298, -1, 48.083298, -48.083298, 1, 48.083298, -68, 1, 0, 0, 1, 0, -48.083298, 1, 48.083298, 0, 1, 68, 0, -1, 68, 0, 1, 68, -48.083298, 1, 48.083298, 0, 1, 0, 48.083298, -1, -48.083298, 0, -1, -68, 0, -1, 0, 0, -1, -68, 48.083298, -1, -48.083298, 48.083298, 1, -48.083298, 68, -1, 0, 48.083298, -1, -48.083298, 0, -1, 0, 48.083298, -1, -48.083298, 68, -1, 0, 68, 1, 0, 0, -1, 68, 48.083298, -1, 48.083298, 0, -1, 0, 48.083298, -1, 48.083298, 0, -1, 68, 0, 1, 68, 48.083298, -1, 48.083298, 68, -1, 0, 0, -1, 0, 68, -1, 0, 48.083298, -1, 48.083298, 48.083298, 1, 48.083298, 48.083298, 1, -48.083298, 0, 1, -68, 0, -1, -68, 0, 1, -68, 48.083298, 1, -48.083298, 0, 1, 0, 68, 1, 0, 48.083298, 1, -48.083298, 48.083298, -1, -48.083298, 48.083298, 1, -48.083298, 68, 1, 0, 0, 1, 0, 0, 1, 68, 48.083298, 1, 48.083298, 48.083298, -1, 48.083298, 48.083298, 1, 48.083298, 0, 1, 68, 0, 1, 0, 48.083298, 1, 48.083298, 68, 1, 0, 68, -1, 0, 68, 1, 0, 48.083298, 1, 48.083298, 0, 1, 0)
 
+[sub_resource type="Curve3D" id="Curve3D_noarx"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31.742, 7.49, -15.857),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve3D" id="Curve3D_a0tk4"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40.727, 0, -16.902),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve3D" id="Curve3D_r3fl7"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38.562, 0, -15.752),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve3D" id="Curve3D_jka67"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40.242, 0, -15.722),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve3D" id="Curve3D_i5arm"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25.782, 0, -10.667),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve3D" id="Curve3D_wc5p8"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.847, 0, -8.577, 0, 0, 0, 0, 0, 0, 12.415, 0, -5.18, 0, 0, 0, 0, 0, 0, 9.675, 0, 3.255),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[sub_resource type="Curve3D" id="Curve3D_jsk3o"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13.347, 0, -6.332),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve3D" id="Curve3D_4arys"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.312, 0, -5.727, 0, 0, 0, 0, 0, 0, 7.905, 0, -3.56, 0, 0, 0, 0, 0, 0, 6.245, 0, 1.79),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[sub_resource type="Curve3D" id="Curve3D_6iypd"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16.537, 0, -36.652),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve3D" id="Curve3D_imku0"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22.117, 0, -28.082, 0, 0, 0, 0, 0, 0, 25.785, 0, -6.87),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="Curve3D" id="Curve3D_tereu"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22.117, 0, -28.082, 0, 0, 0, 0, 0, 0, 25.785, 0, -6.87),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="Curve3D" id="Curve3D_cdqbm"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22.117, 0, -28.082, 0, 0, 0, 0, 0, 0, 25.785, 0, -6.87),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
 [sub_resource type="GDScript" id="GDScript_a202f"]
 resource_name = "StartMenu"
 script/source = "extends Area2D
@@ -731,41 +827,125 @@ shape = SubResource("ConcavePolygonShape3D_r3fl7")
 
 [node name="SpawnPoint" type="Node3D" parent="Area3D" unique_id=1222136977]
 
-[node name="Marker3D" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=1856199891]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 13.987961, 15)
+[node name="Node3D" type="Node3D" parent="Area3D/SpawnPoint" unique_id=785504269]
 
-[node name="Marker3D2" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=1608632549]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 13.526545, 72)
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D" unique_id=828406290]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4746864, 10.775871, 21.889486)
+curve = SubResource("Curve3D_noarx")
 
-[node name="Marker3D3" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=1643462034]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.050503, 13.793953, 15)
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D/Path3D" unique_id=584704126]
+transform = Transform3D(0.44687822, 0, -0.89454323, 0, 0.9999962, 0, 0.8945458, 0, 0.4468769, 0, 0, 0)
+rotation_mode = 1
 
-[node name="Marker3D4" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=498739683]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 13.338289, -31)
+[node name="Node3D2" type="Node3D" parent="Area3D/SpawnPoint" unique_id=844296355]
 
-[node name="Marker3D5" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=1328915279]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 12.688222, 28.538212)
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D2" unique_id=873449695]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.290165, 13.031677, 80.39425)
+curve = SubResource("Curve3D_a0tk4")
 
-[node name="Marker3D6" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=1928443935]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 13.083795, 44)
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D2/Path3D" unique_id=632155241]
+transform = Transform3D(0.383294, 0, -0.9235802, 0, 0.9999962, 0, 0.9235837, 0, 0.3832926, 0, 0, 0)
+rotation_mode = 1
 
-[node name="Marker3D7" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=311092803]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 11.993848, 6.996191)
+[node name="Node3D3" type="Node3D" parent="Area3D/SpawnPoint" unique_id=1416791584]
 
-[node name="Marker3D8" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=744290155]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46, 22.701363, 32)
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D3" unique_id=1872316826]
+transform = Transform3D(-0.016318068, 0, 0.99986696, 0, 1, 0, -0.99986696, 0, -0.016318068, 50.58709, 13.299086, 19.583092)
+curve = SubResource("Curve3D_r3fl7")
 
-[node name="Marker3D9" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=1975756281]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -59, 13.6700115, -8)
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D3/Path3D" unique_id=95131012]
+transform = Transform3D(0.37813702, 0, -0.92570287, 0, 0.9999962, 0, 0.92570597, 0, 0.37813574, 0, 0, 0)
+rotation_mode = 1
 
-[node name="Marker3D10" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=1760747558]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 2.7449906, 47)
+[node name="Node3D4" type="Node3D" parent="Area3D/SpawnPoint" unique_id=502087129]
 
-[node name="Marker3D11" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=980353924]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.871765, 0.73471385, 0)
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D4" unique_id=1005378388]
+transform = Transform3D(0.69534856, 0, -0.71867263, 0, 1, 0, 0.71867263, 0, 0.69534856, -9.290165, 13.130795, -39.8192)
+curve = SubResource("Curve3D_jka67")
 
-[node name="Marker3D12" type="Marker3D" parent="Area3D/SpawnPoint" unique_id=853737015]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.943237, 0.7494736, 15)
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D4/Path3D" unique_id=1094365984]
+transform = Transform3D(0.36388588, 0, -0.9313975, 0, 0.9999962, 0, 0.9314011, 0, 0.36388448, 0, 0, 0)
+rotation_mode = 1
+
+[node name="Node3D5" type="Node3D" parent="Area3D/SpawnPoint" unique_id=1629364379]
+
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D5" unique_id=88446273]
+transform = Transform3D(0.31533435, 0, -0.9489806, 0, 1, 0, 0.9489806, 0, 0.31533435, -20.41573, 12.193355, 11.241898)
+curve = SubResource("Curve3D_i5arm")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D5/Path3D" unique_id=1608473215]
+transform = Transform3D(0.38229376, 0, -0.9239956, 0, 0.9999962, 0, 0.9239991, 0, 0.3822923, 0, 0, 0)
+rotation_mode = 1
+
+[node name="Node3D6" type="Node3D" parent="Area3D/SpawnPoint" unique_id=1996186792]
+
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D6" unique_id=1077605627]
+transform = Transform3D(0.31533435, 0, -0.9489806, 0, 1, 0, 0.9489806, 0, 0.31533435, -5.1921635, 12.588927, 40.757065)
+curve = SubResource("Curve3D_wc5p8")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D6/Path3D" unique_id=1811547545]
+transform = Transform3D(0.94904333, 0, -0.31501904, 0, 0.9999962, 0, 0.31502002, 0, 0.94904035, 0, 0, 0)
+rotation_mode = 1
+
+[node name="Node3D7" type="Node3D" parent="Area3D/SpawnPoint" unique_id=216476716]
+
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D7" unique_id=1910496086]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.765495, 12.193961, 10.159159)
+curve = SubResource("Curve3D_jsk3o")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D7/Path3D" unique_id=1063373384]
+transform = Transform3D(0.42860922, 0, -0.9034471, 0, 0.9999962, 0, 0.90344995, 0, 0.42860782, 0, 0, 0)
+rotation_mode = 1
+
+[node name="Node3D8" type="Node3D" parent="Area3D/SpawnPoint" unique_id=661539685]
+
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D8" unique_id=1561911652]
+transform = Transform3D(0.31533435, 0, -0.9489806, 0, 1, 0, 0.9489806, 0, 0.31533435, -47.461098, 19.175304, 26.338932)
+curve = SubResource("Curve3D_4arys")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D8/Path3D" unique_id=1425069616]
+transform = Transform3D(0.92724895, 0, -0.37433124, 0, 0.9999962, 0, 0.37433207, 0, 0.92724687, 0, 0, 0)
+rotation_mode = 1
+
+[node name="Node3D9" type="Node3D" parent="Area3D/SpawnPoint" unique_id=1109909617]
+
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D9" unique_id=1626460707]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -67.93688, 13.092754, 18.36029)
+curve = SubResource("Curve3D_6iypd")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D9/Path3D" unique_id=50579662]
+transform = Transform3D(0.91147137, 0, -0.41124493, 0, 0.9999962, 0, 0.41124633, 0, 0.91146827, 0, 0, 0)
+rotation_mode = 1
+
+[node name="Node3D10" type="Node3D" parent="Area3D/SpawnPoint" unique_id=799110500]
+
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D10" unique_id=1733072168]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.460152, 3.20692, 73.29371)
+curve = SubResource("Curve3D_imku0")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D10/Path3D" unique_id=1336206353]
+transform = Transform3D(0.7855741, 0, -0.61870545, 0, 0.9999962, 0, 0.61870754, 0, 0.78557146, 0, 0, 0)
+rotation_mode = 1
+
+[node name="Node3D11" type="Node3D" parent="Area3D/SpawnPoint" unique_id=1099471643]
+
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D11" unique_id=684152864]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58.11809, 0.46192932, 10.159159)
+curve = SubResource("Curve3D_tereu")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D11/Path3D" unique_id=1344098760]
+transform = Transform3D(0.7855741, 0, -0.61870545, 0, 0.9999962, 0, 0.61870754, 0, 0.78557146, 0, 0, 0)
+rotation_mode = 1
+
+[node name="Node3D12" type="Node3D" parent="Area3D/SpawnPoint" unique_id=2056416412]
+
+[node name="Path3D" type="Path3D" parent="Area3D/SpawnPoint/Node3D12" unique_id=109391295]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.696911, 0.47668904, 16.418365)
+curve = SubResource("Curve3D_cdqbm")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D12/Path3D" unique_id=799605478]
+transform = Transform3D(0.7855741, 0, -0.61870545, 0, 0.9999962, 0, 0.61870754, 0, 0.78557146, 0, 0, 0)
+rotation_mode = 1
 
 [node name="Area2D" type="Area2D" parent="." unique_id=764671441]
 script = SubResource("GDScript_a202f")

@@ -9,12 +9,19 @@ script/source = "extends CharacterBody3D
 var health = 3
 @onready var Head = $Head
 @onready var cooldown = 0
-@onready var detect_player = false
+@onready var detect_player: bool = false
+@onready var walk_path: PathFollow3D
+var follow_player: bool = false
+var player: CharacterBody3D
 
 func _ready():
 	while true:
 		await get_tree().create_timer(1.0).timeout
 		cooldown -= 1
+	
+func _unhandled_input(event: InputEvent) -> void:
+	if Input.is_key_pressed(KEY_ESCAPE):
+		queue_free()
 		
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -25,24 +32,31 @@ func _physics_process(delta: float) -> void:
 		
 	move_and_slide()
 	
-	if detect_player:
-		var player = get_parent().get_parent().get_node_or_null(\"MainPlayer\")
+	if detect_player or follow_player:
+		player = get_tree().current_scene.get_node_or_null(\"MainPlayer\")
 		if player:
-			$Head.look_at(player.get_node(\"Head\").global_position, Vector3.UP)
+			Head.look_at(player.get_node(\"Head\").global_position, Vector3.UP)
 			global_rotation.y = Head.global_rotation.y
-		
-		if $Head/Aim.is_colliding():
-			var hit = $Head/Aim.get_collider()
-			if hit:
-				if hit.name == \"MainPlayer\" and cooldown < 1:
-					cooldown = 2
-					spawn_bullet()
+			
+		if detect_player:
+			if $Head/Aim.is_colliding():
+				var hit = $Head/Aim.get_collider()
+				if hit:
+					if hit.name == \"MainPlayer\" and cooldown < 1:
+						cooldown = 2
+						spawn_bullet()
+		elif follow_player:
+			global_position = global_transform.origin + -global_transform.basis.z * 0.05
 	else:
+		walk_path.progress += 3 * delta
+		var t = walk_path.global_transform
+		var pos = global_transform.origin
+		pos.x = t.origin.x
+		pos.z = t.origin.z
+		global_transform.origin = pos
+			
+		Head.global_rotation.y = walk_path.global_rotation.y
 		global_rotation.y = Head.global_rotation.y
-		global_position = global_transform.origin + -global_transform.basis.z * 0.05
-		
-		if avoid_obsticle or not $Body/Ground.get_overlapping_bodies().is_empty():
-			rotate_detected()
 	
 	
 @export var object_to_spawn: PackedScene
@@ -54,10 +68,11 @@ func spawn_bullet():
 	
 
 func _on_area_3d_body_entered(body) -> void:
-	print(\"detected\")
+	print(\"In range\")
 	detect_player = true
+	follow_player = true
 func _on_area_3d_body_exited(body) -> void:
-	print(\"detected\")
+	print(\"Out of range\")
 	detect_player = false
 
 
@@ -83,9 +98,6 @@ albedo_color = Color(0.91806, 0.575202, 0.222449, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_upa07"]
 radius = 0.4
 height = 1.8
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_5ovji"]
-size = Vector3(0.595459, 0.47644043, 0.81103516)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_upa07"]
 size = Vector3(1, 1.2489014, 1.5605469)
@@ -116,13 +128,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09711, 0)
 material_override = SubResource("StandardMaterial3D_fcg7d")
 gi_mode = 2
 mesh = SubResource("CapsuleMesh_upa07")
-
-[node name="Ground" type="Area3D" parent="Body" unique_id=1883766893]
-collision_layer = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Ground" unique_id=122627152]
-transform = Transform3D(1.0000002, 0, 0, 0, -1.0000002, 8.7422805e-08, 0, -8.7422805e-08, -1.0000002, 0.038452175, -1.0167581, -0.56798995)
-shape = SubResource("BoxShape3D_5ovji")
 
 [node name="Obsticle" type="Area3D" parent="Body" unique_id=1138479424]
 collision_layer = 0
