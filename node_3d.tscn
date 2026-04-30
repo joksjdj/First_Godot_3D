@@ -894,7 +894,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.765495, 12.193961, 10.159
 curve = SubResource("Curve3D_jsk3o")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D7/Path3D" unique_id=1063373384]
-transform = Transform3D(0.42860922, 0, -0.9034471, 0, 0.9999962, 0, 0.90344995, 0, 0.42860782, 0, 0, 0)
+transform = Transform3D(0.4286092, 0, -0.9034471, 0, 0.9999962, 0, 0.90344995, 0, 0.42860782, 0, 0, 0)
 rotation_mode = 1
 
 [node name="Node3D8" type="Node3D" parent="Area3D/SpawnPoint" unique_id=661539685]
@@ -904,7 +904,7 @@ transform = Transform3D(0.31533435, 0, -0.9489806, 0, 1, 0, 0.9489806, 0, 0.3153
 curve = SubResource("Curve3D_4arys")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Area3D/SpawnPoint/Node3D8/Path3D" unique_id=1425069616]
-transform = Transform3D(0.92724895, 0, -0.37433124, 0, 0.9999962, 0, 0.37433207, 0, 0.92724687, 0, 0, 0)
+transform = Transform3D(0.92724895, 0, -0.3743312, 0, 0.9999962, 0, 0.37433207, 0, 0.92724687, 0, 0, 0)
 rotation_mode = 1
 
 [node name="Node3D9" type="Node3D" parent="Area3D/SpawnPoint" unique_id=1109909617]

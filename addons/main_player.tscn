@@ -77,8 +77,8 @@ expand_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/TextureRect" unique_id=56920900]
 layout_mode = 0
-offset_left = 4.0
-offset_top = 4.0
+offset_left = 12.0
+offset_top = 16.0
 offset_right = 168.0
 offset_bottom = 204.0
 
@@ -186,3 +186,30 @@ scale = Vector2(1.3333334, 1.0905421)
 points = PackedVector2Array(32, 40, 32, 32, 32, 31.910828, 32, 48)
 width = 3.0
 default_color = Color(0, 0, 0, 1)
+
+[node name="EnemyMonitoring" type="HBoxContainer" parent="CanvasLayer/TextureRect" unique_id=1979074518]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.5
+offset_right = 100.5
+offset_bottom = 56.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=160034043]
+layout_mode = 2
+text = "Enemies left: "
+
+[node name="EnemiesLeft" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=602673327]
+layout_mode = 2
+text = "0"
+
+[node name="Label2" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=1388580374]
+layout_mode = 2
+text = "| Score: "
+
+[node name="Score" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=81449896]
+layout_mode = 2
+text = "0"

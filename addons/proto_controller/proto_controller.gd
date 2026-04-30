@@ -110,8 +110,14 @@ func _physics_process(delta: float) -> void:
 	# Use velocity to actually move
 	move_and_slide()
 	
+	## UI
 	var fps = Engine.get_frames_per_second()
 	fps_value.text = str(fps)
+	
+	var enemies_left: Node3D = get_tree().current_scene.get_node_or_null("Enemies")
+	if enemies_left:
+		$CanvasLayer/TextureRect/EnemyMonitoring/EnemiesLeft.text = str(enemies_left.enemies_left)
+		$CanvasLayer/TextureRect/EnemyMonitoring/Score.text = str(enemies_left.score)
 		
 
 @onready var hearts = $CanvasLayer/TextureRect/health

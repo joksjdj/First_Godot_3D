@@ -9,14 +9,18 @@ func _physics_process(delta: float) -> void:
 		if hit.name == \"MainPlayer\":
 			hit.health -= 1
 			print(\"Hit:\", hit.name, \"| Health:\", hit.health)
-		elif hit.get_parent().name == \"Enemies\":
+		elif hit.name == \"Enemy\":
+			hit.follow_player = true
 			hit.health -= 1
+			var all_hearts = hit.get_node(\"Sprite3D\").get_node(\"SubViewport\").get_node(\"Node2D\")
+			var heart = all_hearts.get_child(all_hearts.get_child_count() - 1)
+			heart.queue_free()
 			print(\"Hit:\", hit.name, \"| Health:\", hit.health)
 		else:
 			print(\"Hit:\", hit.name, \"|\", hit)
 		queue_free()
 	
-	global_position = global_transform.origin + -global_transform.basis.z * 1.0
+	global_position = global_transform.origin + -global_transform.basis.z * 0.9
 "
 
 [sub_resource type="MeshTexture" id="MeshTexture_xmp5n"]
@@ -27,7 +31,7 @@ metallic = 1.0
 metallic_texture = SubResource("MeshTexture_xmp5n")
 
 [node name="Area3D" type="Area3D" unique_id=975487893]
-collision_layer = 3
+collision_layer = 2
 collision_mask = 3
 script = SubResource("GDScript_xmp5n")
 

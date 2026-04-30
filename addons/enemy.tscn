@@ -28,6 +28,8 @@ func _physics_process(delta: float) -> void:
 		velocity += get_gravity() * delta
 		
 	if health < 1:
+		get_tree().current_scene.get_node(\"Enemies\").enemies_left -= 1
+		get_tree().current_scene.get_node(\"Enemies\").score += 1
 		queue_free()
 		
 	move_and_slide()
@@ -46,9 +48,9 @@ func _physics_process(delta: float) -> void:
 						cooldown = 2
 						spawn_bullet()
 		elif follow_player:
-			global_position = global_transform.origin + -global_transform.basis.z * 0.05
+			global_position = global_transform.origin + -global_transform.basis.z * 0.3
 	else:
-		walk_path.progress += 3 * delta
+		walk_path.progress += 4 * delta
 		var t = walk_path.global_transform
 		var pos = global_transform.origin
 		pos.x = t.origin.x
@@ -74,13 +76,6 @@ func _on_area_3d_body_entered(body) -> void:
 func _on_area_3d_body_exited(body) -> void:
 	print(\"Out of range\")
 	detect_player = false
-
-
-var avoid_obsticle = false
-func _on_obsticle_body_entered(body) -> void:
-	avoid_obsticle = true
-func _on_obsticle_body_exited(body) -> void:
-	avoid_obsticle = false
 
 func rotate_detected() -> void:
 	var t = global_transform
@@ -111,6 +106,9 @@ albedo_color = Color(0.13, 0.9130001, 1, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_upa07"]
 radius = 10.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_upa07"]
+viewport_path = NodePath("Sprite3D/SubViewport")
 
 [node name="Enemy" type="CharacterBody3D" unique_id=802950666]
 transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, 0, 0)
@@ -164,9 +162,62 @@ target_position = Vector3(0, -10, 0)
 collision_layer = 0
 collision_mask = 16
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyDetect" unique_id=2017337946]
-transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 1.1764706, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyDetect" unique_id=1413491364]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("SphereShape3D_upa07")
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=99927184]
+transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 2.376079, 0)
+billboard = 1
+texture = SubResource("ViewportTexture_upa07")
+
+[node name="SubViewport" type="SubViewport" parent="Sprite3D" unique_id=1660850994]
+transparent_bg = true
+size = Vector2i(200, 50)
+
+[node name="Node2D" type="Node2D" parent="Sprite3D/SubViewport" unique_id=180675948]
+
+[node name="heart" type="Node2D" parent="Sprite3D/SubViewport/Node2D" unique_id=1050601182]
+position = Vector2(70, 25)
+scale = Vector2(0.345, 0.345)
+
+[node name="Line2D" type="Line2D" parent="Sprite3D/SubViewport/Node2D/heart" unique_id=620168924]
+position = Vector2(135, -240)
+points = PackedVector2Array(-136, 280, -200, 216, -168, 184, -136, 216, -104, 184, -72, 216)
+closed = true
+default_color = Color(0, 0, 0, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="Sprite3D/SubViewport/Node2D/heart/Line2D" unique_id=828974833]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
+
+[node name="heart2" type="Node2D" parent="Sprite3D/SubViewport/Node2D" unique_id=1701790123]
+position = Vector2(100, 25)
+scale = Vector2(0.345, 0.345)
+
+[node name="Line2D" type="Line2D" parent="Sprite3D/SubViewport/Node2D/heart2" unique_id=1037860778]
+position = Vector2(135, -240)
+points = PackedVector2Array(-136, 280, -200, 216, -168, 184, -136, 216, -104, 184, -72, 216)
+closed = true
+default_color = Color(0, 0, 0, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="Sprite3D/SubViewport/Node2D/heart2/Line2D" unique_id=906270472]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
+
+[node name="heart3" type="Node2D" parent="Sprite3D/SubViewport/Node2D" unique_id=134344556]
+position = Vector2(130, 25)
+scale = Vector2(0.345, 0.345)
+
+[node name="Line2D" type="Line2D" parent="Sprite3D/SubViewport/Node2D/heart3" unique_id=624345809]
+position = Vector2(135, -240)
+points = PackedVector2Array(-136, 280, -200, 216, -168, 184, -136, 216, -104, 184, -72, 216)
+closed = true
+default_color = Color(0, 0, 0, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="Sprite3D/SubViewport/Node2D/heart3/Line2D" unique_id=971279694]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
 
 [connection signal="body_entered" from="Body/Obsticle" to="." method="_on_obsticle_body_entered"]
 [connection signal="body_exited" from="Body/Obsticle" to="." method="_on_obsticle_body_exited"]
