@@ -6,25 +6,36 @@
 script/source = "extends Node3D
 
 @export var enemy_to_spawn: PackedScene
+@onready var thread = Thread.new()
 var enemies_left: int = 0
 var score: int = 0
-
+var ready_for_spawn: bool = false
+@onready var spawn_area = get_tree().current_scene.get_node(\"Area3D\").get_node(\"SpawnPoint\")
+@onready var points = spawn_area.get_children()
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var spawn_area = get_tree().current_scene.get_node(\"Area3D\").get_node(\"SpawnPoint\")
+	spawn_enemies()
 	
-	var points = spawn_area.get_children()
+	thread.start(spawn_thread)
+		
+func _unhandled_input(event: InputEvent) -> void:
+	if Input.is_key_pressed(KEY_ESCAPE):
+		queue_free()
 
+func spawn_thread():
+	while true:
+		if enemies_left <= 0 and ready_for_spawn:
+			ready_for_spawn = false
+			call_deferred(\"spawn_enemies\")
+	
+func spawn_enemies():
 	for spawn in points:
 		var enemy = enemy_to_spawn.instantiate()
 		spawn.add_child(enemy)
 		enemy.walk_path = spawn.get_node(\"Path3D\").get_node(\"PathFollow3D\")
 		enemy.global_transform = spawn.get_node(\"Path3D\").get_node(\"PathFollow3D\").global_transform
 		enemies_left += 1
-		
-func _unhandled_input(event: InputEvent) -> void:
-	if Input.is_key_pressed(KEY_ESCAPE):
-		queue_free()
+	ready_for_spawn = true
 "
 
 [node name="Enemies" type="Node3D" unique_id=1916064014]

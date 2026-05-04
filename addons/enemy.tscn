@@ -48,7 +48,7 @@ func _physics_process(delta: float) -> void:
 						cooldown = 2
 						spawn_bullet()
 		elif follow_player:
-			global_position = global_transform.origin + -global_transform.basis.z * 0.3
+			global_position = global_transform.origin + -global_transform.basis.z * 0.15
 	else:
 		walk_path.progress += 4 * delta
 		var t = walk_path.global_transform
