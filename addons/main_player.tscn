@@ -163,28 +163,28 @@ position = Vector2(20, 20)
 position = Vector2(-59.636353, -42.577484)
 scale = Vector2(1.0909091, 1.3333334)
 points = PackedVector2Array(32, 32, 48, 32)
-width = 3.0
+width = 2.0
 default_color = Color(0, 0, 0, 1)
 
 [node name="Line2D2" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=17038708]
 position = Vector2(-10.181824, -42.577484)
 scale = Vector2(1.0909091, 1.3333334)
 points = PackedVector2Array(16, 32, 32, 32)
-width = 3.0
+width = 2.0
 default_color = Color(0, 0, 0, 1)
 
 [node name="Line2D3" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=1381242553]
 position = Vector2(-42.666687, -9.950775)
 scale = Vector2(1.3333334, 1.0868558)
 points = PackedVector2Array(32, 16, 32, 23.912376, 32, 31.910828, 32, 32)
-width = 3.0
+width = 1.8
 default_color = Color(0, 0, 0, 1)
 
 [node name="Line2D4" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=1146667014]
 position = Vector2(-42.666687, -59.528473)
 scale = Vector2(1.3333334, 1.0905421)
 points = PackedVector2Array(32, 40, 32, 32, 32, 31.910828, 32, 48)
-width = 3.0
+width = 1.8
 default_color = Color(0, 0, 0, 1)
 
 [node name="EnemyMonitoring" type="HBoxContainer" parent="CanvasLayer/TextureRect" unique_id=1979074518]
