@@ -1,7 +1,59 @@
 [gd_scene format=4 uid="uid://mgp02mkor0at"]
 
-[ext_resource type="PackedScene" uid="uid://dv2msq6yyblnq" path="res://addons/Enemy_area.tscn" id="2_a0tk4"]
-[ext_resource type="PackedScene" uid="uid://bjpcpkarrakqi" path="res://addons/main_player.tscn" id="2_noarx"]
+[ext_resource type="PackedScene" uid="uid://dsypigo33xvb2" path="res://addons/start_menu.tscn" id="1_a202f"]
+[ext_resource type="PackedScene" uid="uid://bfsgt6fsrk103" path="res://addons/login.tscn" id="1_noarx"]
+
+[sub_resource type="GDScript" id="GDScript_noarx"]
+resource_name = "Main"
+script/source = "extends Node3D
+
+@export var login_menu: PackedScene
+@export var start_menu: PackedScene
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	var menu = login_menu.instantiate()
+	add_child(menu)
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+func _unhandled_input(event: InputEvent) -> void:
+	if Input.is_key_pressed(KEY_ESCAPE):
+		var main_player = get_node_or_null(\"MainPlayer\")
+		if main_player:
+			release_mouse()
+			main_player.free_queue()
+			var menu = start_menu.instantiate()
+			add_child(menu)
+
+func release_mouse():
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
+
+func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+	var text = body.get_string_from_utf8()
+	print(\"Server says: \", text, headers, response_code)
+	
+	if response_code == 400:
+		var err_display = get_node(\"Login\").get_node(\"Control\").get_node(\"VBoxContainer\").get_node(\"ErrorContainer\")
+		if err_display:
+			err_display.text = text
+			
+	if response_code == 200 || response_code == 201:
+		var json = JSON.parse_string(text)
+		Global.id = json.id
+		Global.username = json.username
+		Global.created_at = Time.get_datetime_string_from_unix_time(Time.get_unix_time_from_datetime_string(json.created_at))
+		Global.highscore = json.highscore
+		Global.last_game = json.last_game
+		
+		get_node(\"Login\").queue_free()
+		var menu = start_menu.instantiate()
+		add_child(menu)
+"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a202f"]
 
@@ -457,165 +509,10 @@ _data = {
 }
 point_count = 3
 
-[sub_resource type="GDScript" id="GDScript_a202f"]
-resource_name = "StartMenu"
-script/source = "extends Area2D
-
-@export var character_to_spawn: PackedScene
-@export var enemy_area: PackedScene
-
-@onready var unsaved_json
-
-var keybind_name = \"none\"
-var keybind
-
-func _ready() -> void:
-	var file = FileAccess.open(\"res://Local_storage/Settings.json\", FileAccess.READ)
-	var content = file.get_as_text()
-	file.close()
-	unsaved_json = JSON.parse_string(content)
-	
-	change_fps_limiter(unsaved_json.fps)
-	
-	change_vsync_status(unsaved_json.vsync)
-	
-	select_display_mode(unsaved_json.window_display)
-	
-	change_resolution(unsaved_json.resolution)
-	
-	for action in unsaved_json.keybind.keys():
-		var value = unsaved_json.keybind[action]
-		change_keybind(value, action)
-	
-
-## keybinds
-func _input(event):
-	if event is InputEventKey and event.pressed:
-		if keybind_name != \"none\":
-			change_keybind(event.keycode, keybind_name)
-			keybind_name = \"none\"
-			
-func _on_keybind_pressed(source_node) -> void:
-	keybind_name = source_node.get_parent().name
-	keybind = source_node
-	print(keybind_name)
-	
-func change_keybind(key: int, action_name):
-	InputMap.action_erase_events(action_name)
-	var ev := InputEventKey.new()
-	ev.keycode = key
-	InputMap.action_add_event(action_name, ev)
-	
-	unsaved_json.keybind[action_name] = key
-	
-	var buttons_group = get_tree().get_nodes_in_group(\"InputButtons\")
-	for button in buttons_group:
-		if button.name == action_name:
-			button.get_node(\"keybind\").text = ev.as_text()
-
-
-## fps
-func _on_h_slider_drag_ended(value_changed: bool, source: HSlider) -> void:
-	if value_changed:
-		change_fps_limiter(source.value)
-	
-func change_fps_limiter(value: int):
-	unsaved_json.fps = value
-	var fps_container = $Control/Settings/fps/text/value
-	$Control/Settings/fps/HSlider.value = value
-	fps_container.text = str(value)
-	Engine.max_fps = value
-	print(Engine.max_fps)
-	
-
-## vsync
-func _on_vsync_button_pressed() -> void:
-	var status
-	if DisplayServer.window_get_vsync_mode() == DisplayServer.VSYNC_ENABLED:
-		status = \"OFF\"
-	else:
-		status = \"ON\"
-	change_vsync_status(status)
-		
-func change_vsync_status(status):
-	if status == \"OFF\" or status == \"ON\":
-		unsaved_json.vsync = status
-		var vsync_container = $Control/Settings/vsync/Button
-		if status == \"ON\":
-			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
-		elif status == \"OFF\":
-			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-		vsync_container.text = status
-
-
-## resolution
-func _on_resolution_selected(_index: int, source: BaseButton) -> void:
-	var res = int(source.text)
-	change_resolution(res)
-
-func change_resolution(res: int):
-	unsaved_json.resolution = res
-	var short
-	if res == 3840:
-		short =  res * (9.0 / 16)
-		get_viewport().content_scale_size  = Vector2i(res, short)
-	else:
-		short =  res * (16.0 / 9)
-		get_viewport().content_scale_size  = Vector2i(short, res)
-	print(get_window().content_scale_size)
-
-
-## display_mode
-func _on_option_button_item_selected(index: int) -> void:
-	select_display_mode(index)
-	
-func select_display_mode(index: int):
-	unsaved_json.window_display = index
-	$Control/Settings/window/display/OptionButton.select(index)
-	if index == 0:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	elif index == 1:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
-	elif index == 2:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
-
-
-func save_json():
-	var new_json = JSON.stringify(unsaved_json, \"\\t\")
-	var file = FileAccess.open(\"res://Local_storage/Settings.json\", FileAccess.WRITE)
-	file.store_string(new_json)
-	file.close()
-
-func _on_play_button_up():
-	save_json()
-	print(\"Play pressed\")
-	var character = character_to_spawn.instantiate()
-	get_parent().add_child(character)
-	visible = false
-	Control.MOUSE_FILTER_IGNORE
-	
-	var area = enemy_area.instantiate()
-	get_parent().add_child(area)
-	
-func _on_quit_pressed() -> void:
-	save_json()
-	get_tree().quit()
-"
-
-[sub_resource type="SphereMesh" id="SphereMesh_noarx"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tuemg"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_i0g27"]
-material = SubResource("StandardMaterial3D_tuemg")
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_ealrb"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_jsnrv"]
-
 [node name="Main" type="Node3D" unique_id=1704034660]
+script = SubResource("GDScript_noarx")
+login_menu = ExtResource("1_noarx")
+start_menu = ExtResource("1_a202f")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=86343598]
 
@@ -947,306 +844,6 @@ curve = SubResource("Curve3D_cdqbm")
 transform = Transform3D(0.7855741, 0, -0.61870545, 0, 0.9999962, 0, 0.61870754, 0, 0.78557146, 0, 0, 0)
 rotation_mode = 1
 
-[node name="Area2D" type="Area2D" parent="." unique_id=764671441]
-script = SubResource("GDScript_a202f")
-character_to_spawn = ExtResource("2_noarx")
-enemy_area = ExtResource("2_a0tk4")
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=3654084]
 
-[node name="Camera2D" type="Camera2D" parent="Area2D" unique_id=26550593]
-
-[node name="Control" type="Control" parent="Area2D" unique_id=1878755779]
-layout_mode = 3
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-metadata/_edit_use_anchors_ = true
-
-[node name="Play" type="Button" parent="Area2D/Control" unique_id=778631580]
-layout_mode = 0
-offset_left = 388.0
-offset_top = 196.0
-offset_right = 541.0
-offset_bottom = 287.0
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 60
-text = "PLAY"
-
-[node name="Settings" type="VBoxContainer" parent="Area2D/Control" unique_id=28052725]
-layout_mode = 0
-offset_left = -552.0
-offset_top = -295.0
-offset_right = -230.0
-offset_bottom = 261.0
-
-[node name="h1" type="Label" parent="Area2D/Control/Settings" unique_id=413273084]
-layout_mode = 2
-theme_override_font_sizes/font_size = 70
-text = "SETTINGS"
-
-[node name="fps" type="VBoxContainer" parent="Area2D/Control/Settings" unique_id=364970487]
-layout_mode = 2
-
-[node name="text" type="HBoxContainer" parent="Area2D/Control/Settings/fps" unique_id=769579820]
-layout_mode = 2
-
-[node name="title" type="Label" parent="Area2D/Control/Settings/fps/text" unique_id=1452141997]
-layout_mode = 2
-text = "FPS Limit: "
-
-[node name="value" type="Label" parent="Area2D/Control/Settings/fps/text" unique_id=68712908]
-layout_mode = 2
-text = "30"
-
-[node name="HSlider" type="HSlider" parent="Area2D/Control/Settings/fps" unique_id=1748190413]
-layout_mode = 2
-min_value = 30.0
-max_value = 400.0
-step = 5.0
-value = 30.0
-
-[node name="vsync" type="HBoxContainer" parent="Area2D/Control/Settings" unique_id=574891958]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Area2D/Control/Settings/vsync" unique_id=2100651084]
-layout_mode = 2
-text = "Vsync: "
-
-[node name="Button" type="Button" parent="Area2D/Control/Settings/vsync" unique_id=2091692821]
-layout_mode = 2
-text = "ON"
-
-[node name="window" type="VBoxContainer" parent="Area2D/Control/Settings" unique_id=98887800]
-layout_mode = 2
-
-[node name="display" type="HBoxContainer" parent="Area2D/Control/Settings/window" unique_id=448392948]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Area2D/Control/Settings/window/display" unique_id=916011600]
-layout_mode = 2
-text = "Window display: "
-
-[node name="OptionButton" type="OptionButton" parent="Area2D/Control/Settings/window/display" unique_id=953700948]
-layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "Fullscreen"
-popup/item_0/id = 0
-popup/item_1/text = "Maximized"
-popup/item_1/id = 2
-popup/item_2/text = "Windowed"
-popup/item_2/id = 1
-
-[node name="resolution" type="HBoxContainer" parent="Area2D/Control/Settings/window" unique_id=137183983]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Area2D/Control/Settings/window/resolution" unique_id=696531553]
-layout_mode = 2
-text = "Resolution: "
-
-[node name="OptionButton" type="OptionButton" parent="Area2D/Control/Settings/window/resolution" unique_id=162273832]
-layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "1080"
-popup/item_0/id = 0
-popup/item_1/text = "1440"
-popup/item_1/id = 1
-popup/item_2/text = "3840"
-popup/item_2/id = 2
-
-[node name="Label2" type="Label" parent="Area2D/Control/Settings/window/resolution" unique_id=2025114973]
-layout_mode = 2
-text = "P"
-
-[node name="Input" type="VBoxContainer" parent="Area2D/Control" unique_id=657554954]
-layout_mode = 0
-offset_left = -128.0
-offset_top = -204.0
-offset_right = 194.0
-offset_bottom = 143.0
-
-[node name="layer" type="VBoxContainer" parent="Area2D/Control/Input" unique_id=1961359427]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="Area2D/Control/Input/layer" unique_id=1760887109]
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "↑"
-horizontal_alignment = 1
-
-[node name="Forward" type="HBoxContainer" parent="Area2D/Control/Input/layer" unique_id=759722634 groups=["InputButtons"]]
-layout_mode = 2
-alignment = 1
-
-[node name="keybind" type="Button" parent="Area2D/Control/Input/layer/Forward" unique_id=1596018297 groups=["InputButtons"]]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "W"
-
-[node name="layer2" type="HBoxContainer" parent="Area2D/Control/Input" unique_id=2008466470]
-layout_mode = 2
-alignment = 1
-
-[node name="Left" type="HBoxContainer" parent="Area2D/Control/Input/layer2" unique_id=618587572 groups=["InputButtons"]]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="Area2D/Control/Input/layer2/Left" unique_id=1563041349]
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "←"
-
-[node name="keybind" type="Button" parent="Area2D/Control/Input/layer2/Left" unique_id=710768667 groups=["InputButtons"]]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "A"
-
-[node name="Backwards" type="VBoxContainer" parent="Area2D/Control/Input/layer2" unique_id=302137592 groups=["InputButtons"]]
-layout_mode = 2
-
-[node name="keybind" type="Button" parent="Area2D/Control/Input/layer2/Backwards" unique_id=1818102066 groups=["InputButtons"]]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "S"
-
-[node name="Right" type="HBoxContainer" parent="Area2D/Control/Input/layer2" unique_id=131566930 groups=["InputButtons"]]
-layout_mode = 2
-
-[node name="keybind" type="Button" parent="Area2D/Control/Input/layer2/Right" unique_id=2094053597 groups=["InputButtons"]]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "D"
-
-[node name="Label" type="Label" parent="Area2D/Control/Input/layer2/Right" unique_id=1723354278]
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "→"
-
-[node name="layer3" type="VBoxContainer" parent="Area2D/Control/Input" unique_id=2130103613]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="Area2D/Control/Input/layer3" unique_id=232250758]
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "↓"
-horizontal_alignment = 1
-
-[node name="Account" type="VBoxContainer" parent="Area2D/Control" unique_id=794928378]
-layout_mode = 0
-offset_left = 296.0
-offset_top = -210.0
-offset_right = 516.0
-offset_bottom = 146.0
-
-[node name="Profile" type="Container" parent="Area2D/Control/Account" unique_id=374519470]
-custom_minimum_size = Vector2(0, 250)
-layout_mode = 2
-
-[node name="Profile" type="Node2D" parent="Area2D/Control/Account/Profile" unique_id=950568677]
-position = Vector2(110, 120)
-
-[node name="Outline" type="MeshInstance2D" parent="Area2D/Control/Account/Profile/Profile" unique_id=1346262516]
-self_modulate = Color(0, 0, 0, 1)
-show_behind_parent = true
-scale = Vector2(204.00002, 204.00002)
-mesh = SubResource("SphereMesh_noarx")
-
-[node name="Background" type="MeshInstance2D" parent="Area2D/Control/Account/Profile/Profile/Outline" unique_id=1405255789]
-self_modulate = Color(0.54, 0.54, 0.54, 1)
-clip_children = 2
-scale = Vector2(0.83333325, 0.83333325)
-mesh = SubResource("SphereMesh_noarx")
-
-[node name="Human" type="MeshInstance2D" parent="Area2D/Control/Account/Profile/Profile/Outline/Background" unique_id=289730950]
-modulate = Color(0, 0, 0, 1)
-position = Vector2(0, -0.135)
-scale = Vector2(0.33, 0.33)
-mesh = SubResource("SphereMesh_i0g27")
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="Area2D/Control/Account/Profile/Profile/Outline/Background/Human" unique_id=596148719]
-position = Vector2(0, 1.83)
-scale = Vector2(1.495, 1.495)
-mesh = SubResource("CapsuleMesh_ealrb")
-
-[node name="Info" type="VBoxContainer" parent="Area2D/Control/Account" unique_id=1464632922]
-layout_mode = 2
-alignment = 1
-
-[node name="Username" type="HBoxContainer" parent="Area2D/Control/Account/Info" unique_id=739589781]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Area2D/Control/Account/Info/Username" unique_id=390910200]
-layout_mode = 2
-text = "Username: "
-
-[node name="value" type="Label" parent="Area2D/Control/Account/Info/Username" unique_id=805337304]
-layout_mode = 2
-text = "Placeholder"
-
-[node name="Created" type="HBoxContainer" parent="Area2D/Control/Account/Info" unique_id=1976290409]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Area2D/Control/Account/Info/Created" unique_id=474483902]
-layout_mode = 2
-text = "Created: "
-
-[node name="value" type="Label" parent="Area2D/Control/Account/Info/Created" unique_id=118830916]
-layout_mode = 2
-text = "Placeholder"
-
-[node name="Highscore" type="HBoxContainer" parent="Area2D/Control/Account/Info" unique_id=1200281368]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Area2D/Control/Account/Info/Highscore" unique_id=203286193]
-layout_mode = 2
-text = "Highscore: "
-
-[node name="value" type="Label" parent="Area2D/Control/Account/Info/Highscore" unique_id=1110285441]
-layout_mode = 2
-text = "Placeholder"
-
-[node name="LastScore" type="HBoxContainer" parent="Area2D/Control/Account/Info" unique_id=1130508998]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Area2D/Control/Account/Info/LastScore" unique_id=574606198]
-layout_mode = 2
-text = "Last game: "
-
-[node name="value" type="Label" parent="Area2D/Control/Account/Info/LastScore" unique_id=1005926702]
-layout_mode = 2
-text = "Placeholder"
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="Area2D/Control/Account" unique_id=564249403]
-self_modulate = Color(0.19, 0.19, 0.19, 1)
-show_behind_parent = true
-position = Vector2(110.00001, 182.87498)
-scale = Vector2(263.99994, 378.24997)
-mesh = SubResource("BoxMesh_jsnrv")
-
-[node name="quit" type="Button" parent="Area2D/Control" unique_id=1416584292]
-layout_mode = 0
-offset_left = 428.0
-offset_top = -308.0
-offset_right = 539.0
-offset_bottom = -231.0
-theme_override_font_sizes/font_size = 50
-text = "EXIT"
-
-[connection signal="button_up" from="Area2D/Control/Play" to="Area2D" method="_on_play_button_up"]
-[connection signal="drag_ended" from="Area2D/Control/Settings/fps/HSlider" to="Area2D" method="_on_h_slider_drag_ended" flags=18]
-[connection signal="pressed" from="Area2D/Control/Settings/vsync/Button" to="Area2D" method="_on_vsync_button_pressed"]
-[connection signal="item_selected" from="Area2D/Control/Settings/window/display/OptionButton" to="Area2D" method="_on_option_button_item_selected"]
-[connection signal="item_selected" from="Area2D/Control/Settings/window/resolution/OptionButton" to="Area2D" method="_on_resolution_selected" flags=18]
-[connection signal="pressed" from="Area2D/Control/Input/layer/Forward/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
-[connection signal="pressed" from="Area2D/Control/Input/layer2/Left/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
-[connection signal="pressed" from="Area2D/Control/Input/layer2/Backwards/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
-[connection signal="pressed" from="Area2D/Control/Input/layer2/Right/keybind" to="Area2D" method="_on_keybind_pressed" flags=18]
-[connection signal="pressed" from="Area2D/Control/quit" to="Area2D" method="_on_quit_pressed"]
+[connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]

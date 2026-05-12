@@ -26,6 +26,7 @@ func spawn_thread():
 	while true:
 		if enemies_left <= 0 and ready_for_spawn:
 			ready_for_spawn = false
+			OS.delay_msec(500)
 			call_deferred(\"spawn_enemies\")
 	
 func spawn_enemies():

@@ -15,6 +15,10 @@ run/main_scene="uid://mgp02mkor0at"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Global="*uid://ba3wxr2s7trn7"
+
 [display]
 
 window/size/borderless=true

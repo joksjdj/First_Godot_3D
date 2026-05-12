@@ -1,0 +1,472 @@
+[gd_scene format=3 uid="uid://dsypigo33xvb2"]
+
+[ext_resource type="PackedScene" uid="uid://bjpcpkarrakqi" path="res://addons/main_player.tscn" id="1_5a10u"]
+[ext_resource type="PackedScene" uid="uid://dv2msq6yyblnq" path="res://addons/Enemy_area.tscn" id="2_vy8dd"]
+
+[sub_resource type="GDScript" id="GDScript_a202f"]
+resource_name = "StartMenu"
+script/source = "extends Area2D
+
+@export var character_to_spawn: PackedScene
+@export var enemy_area: PackedScene
+
+@onready var unsaved_json
+
+var keybind_name = \"none\"
+var keybind
+
+func _ready() -> void:
+	var file = FileAccess.open(\"res://Local_storage/Settings.json\", FileAccess.READ)
+	var content = file.get_as_text()
+	file.close()
+	unsaved_json = JSON.parse_string(content)
+	
+	change_fps_limiter(unsaved_json.fps)
+	
+	change_vsync_status(unsaved_json.vsync)
+	
+	select_display_mode(unsaved_json.window_display)
+	
+	change_resolution(unsaved_json.resolution)
+	
+	for action in unsaved_json.keybind.keys():
+		var value = unsaved_json.keybind[action]
+		change_keybind(value, action)
+	
+	get_account_info()
+	
+
+## keybinds
+func _input(event):
+	if event is InputEventKey and event.pressed:
+		if keybind_name != \"none\":
+			change_keybind(event.keycode, keybind_name)
+			keybind_name = \"none\"
+			
+func _on_keybind_pressed(source_node) -> void:
+	keybind_name = source_node.get_parent().name
+	keybind = source_node
+	print(keybind_name)
+	
+func change_keybind(key: int, action_name):
+	InputMap.action_erase_events(action_name)
+	var ev := InputEventKey.new()
+	ev.keycode = key
+	InputMap.action_add_event(action_name, ev)
+	
+	unsaved_json.keybind[action_name] = key
+	
+	var buttons_group = get_tree().get_nodes_in_group(\"InputButtons\")
+	for button in buttons_group:
+		if button.name == action_name:
+			button.get_node(\"keybind\").text = ev.as_text()
+
+
+## fps
+func _on_h_slider_drag_ended(value_changed: bool, source: HSlider) -> void:
+	if value_changed:
+		change_fps_limiter(source.value)
+	
+func change_fps_limiter(value: int):
+	unsaved_json.fps = value
+	var fps_container = $Control/Settings/fps/text/value
+	$Control/Settings/fps/HSlider.value = value
+	fps_container.text = str(value)
+	Engine.max_fps = value
+	print(Engine.max_fps)
+	
+
+## vsync
+func _on_vsync_button_pressed() -> void:
+	var status
+	if DisplayServer.window_get_vsync_mode() == DisplayServer.VSYNC_ENABLED:
+		status = \"OFF\"
+	else:
+		status = \"ON\"
+	change_vsync_status(status)
+		
+func change_vsync_status(status):
+	if status == \"OFF\" or status == \"ON\":
+		unsaved_json.vsync = status
+		var vsync_container = $Control/Settings/vsync/Button
+		if status == \"ON\":
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+		elif status == \"OFF\":
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+		vsync_container.text = status
+
+
+## resolution
+func _on_resolution_selected(_index: int, source: BaseButton) -> void:
+	var res = int(source.text)
+	change_resolution(res)
+
+func change_resolution(res: int):
+	unsaved_json.resolution = res
+	var short
+	if res == 3840:
+		short =  res * (9.0 / 16)
+		get_viewport().content_scale_size  = Vector2i(res, short)
+	else:
+		short =  res * (16.0 / 9)
+		get_viewport().content_scale_size  = Vector2i(short, res)
+	print(get_window().content_scale_size)
+
+
+## display_mode
+func _on_option_button_item_selected(index: int) -> void:
+	select_display_mode(index)
+	
+func select_display_mode(index: int):
+	unsaved_json.window_display = index
+	$Control/Settings/window/display/OptionButton.select(index)
+	if index == 0:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	elif index == 1:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+	elif index == 2:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+
+func get_account_info():
+	$Control/Account/Info/Username/value.text = Global.username
+	$Control/Account/Info/Created/value.text = Global.created_at
+	$Control/Account/Info/Highscore/value.text = str(Global.highscore)
+	$Control/Account/Info/LastScore/value.text = str(Global.last_game)
+
+func save_json():
+	var new_json = JSON.stringify(unsaved_json, \"\\t\")
+	var file = FileAccess.open(\"res://Local_storage/Settings.json\", FileAccess.WRITE)
+	file.store_string(new_json)
+	file.close()
+
+func _on_play_button_up():
+	save_json()
+	print(\"Play pressed\")
+	var character = character_to_spawn.instantiate()
+	get_parent().add_child(character)
+	queue_free()
+	
+	var area = enemy_area.instantiate()
+	get_parent().add_child(area)
+	
+func _on_quit_pressed() -> void:
+	save_json()
+	get_tree().quit()
+"
+
+[sub_resource type="SphereMesh" id="SphereMesh_noarx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tuemg"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_i0g27"]
+material = SubResource("StandardMaterial3D_tuemg")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ealrb"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_jsnrv"]
+
+[node name="StartMenu" type="Area2D" unique_id=2040644239]
+script = SubResource("GDScript_a202f")
+character_to_spawn = ExtResource("1_5a10u")
+enemy_area = ExtResource("2_vy8dd")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1004570117]
+
+[node name="Control" type="Control" parent="." unique_id=542178979]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Play" type="Button" parent="Control" unique_id=1619189558]
+layout_mode = 0
+offset_left = 388.0
+offset_top = 196.0
+offset_right = 541.0
+offset_bottom = 287.0
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 60
+text = "PLAY"
+
+[node name="Settings" type="VBoxContainer" parent="Control" unique_id=195876235]
+layout_mode = 0
+offset_left = -552.0
+offset_top = -295.0
+offset_right = -230.0
+offset_bottom = 261.0
+
+[node name="h1" type="Label" parent="Control/Settings" unique_id=1634257921]
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+text = "SETTINGS"
+
+[node name="fps" type="VBoxContainer" parent="Control/Settings" unique_id=312119704]
+layout_mode = 2
+
+[node name="text" type="HBoxContainer" parent="Control/Settings/fps" unique_id=1221639318]
+layout_mode = 2
+
+[node name="title" type="Label" parent="Control/Settings/fps/text" unique_id=853747236]
+layout_mode = 2
+text = "FPS Limit: "
+
+[node name="value" type="Label" parent="Control/Settings/fps/text" unique_id=284626284]
+layout_mode = 2
+text = "30"
+
+[node name="HSlider" type="HSlider" parent="Control/Settings/fps" unique_id=1209277216]
+layout_mode = 2
+min_value = 30.0
+max_value = 400.0
+step = 5.0
+value = 30.0
+
+[node name="vsync" type="HBoxContainer" parent="Control/Settings" unique_id=1736325201]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Settings/vsync" unique_id=285225812]
+layout_mode = 2
+text = "Vsync: "
+
+[node name="Button" type="Button" parent="Control/Settings/vsync" unique_id=1077539103]
+layout_mode = 2
+text = "ON"
+
+[node name="window" type="VBoxContainer" parent="Control/Settings" unique_id=1829196040]
+layout_mode = 2
+
+[node name="display" type="HBoxContainer" parent="Control/Settings/window" unique_id=1044366832]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Settings/window/display" unique_id=1723369750]
+layout_mode = 2
+text = "Window display: "
+
+[node name="OptionButton" type="OptionButton" parent="Control/Settings/window/display" unique_id=1220679339]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Fullscreen"
+popup/item_0/id = 0
+popup/item_1/text = "Maximized"
+popup/item_1/id = 2
+popup/item_2/text = "Windowed"
+popup/item_2/id = 1
+
+[node name="resolution" type="HBoxContainer" parent="Control/Settings/window" unique_id=1405520020]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Settings/window/resolution" unique_id=372025320]
+layout_mode = 2
+text = "Resolution: "
+
+[node name="OptionButton" type="OptionButton" parent="Control/Settings/window/resolution" unique_id=856080163]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "1080"
+popup/item_0/id = 0
+popup/item_1/text = "1440"
+popup/item_1/id = 1
+popup/item_2/text = "3840"
+popup/item_2/id = 2
+
+[node name="Label2" type="Label" parent="Control/Settings/window/resolution" unique_id=747883459]
+layout_mode = 2
+text = "P"
+
+[node name="Input" type="VBoxContainer" parent="Control" unique_id=2038215797]
+layout_mode = 0
+offset_left = -128.0
+offset_top = -204.0
+offset_right = 194.0
+offset_bottom = 143.0
+
+[node name="layer" type="VBoxContainer" parent="Control/Input" unique_id=1069676572]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Control/Input/layer" unique_id=918077939]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "↑"
+horizontal_alignment = 1
+
+[node name="Forward" type="HBoxContainer" parent="Control/Input/layer" unique_id=529405757 groups=["InputButtons"]]
+layout_mode = 2
+alignment = 1
+
+[node name="keybind" type="Button" parent="Control/Input/layer/Forward" unique_id=609397835 groups=["InputButtons"]]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "W"
+
+[node name="layer2" type="HBoxContainer" parent="Control/Input" unique_id=1640387147]
+layout_mode = 2
+alignment = 1
+
+[node name="Left" type="HBoxContainer" parent="Control/Input/layer2" unique_id=1948455350 groups=["InputButtons"]]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Control/Input/layer2/Left" unique_id=1493977519]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "←"
+
+[node name="keybind" type="Button" parent="Control/Input/layer2/Left" unique_id=787482120 groups=["InputButtons"]]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "A"
+
+[node name="Backwards" type="VBoxContainer" parent="Control/Input/layer2" unique_id=1457133354 groups=["InputButtons"]]
+layout_mode = 2
+
+[node name="keybind" type="Button" parent="Control/Input/layer2/Backwards" unique_id=820481624 groups=["InputButtons"]]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "S"
+
+[node name="Right" type="HBoxContainer" parent="Control/Input/layer2" unique_id=452312045 groups=["InputButtons"]]
+layout_mode = 2
+
+[node name="keybind" type="Button" parent="Control/Input/layer2/Right" unique_id=1264096263 groups=["InputButtons"]]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "D"
+
+[node name="Label" type="Label" parent="Control/Input/layer2/Right" unique_id=1086221922]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "→"
+
+[node name="layer3" type="VBoxContainer" parent="Control/Input" unique_id=1398147599]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Control/Input/layer3" unique_id=1279742218]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "↓"
+horizontal_alignment = 1
+
+[node name="Account" type="VBoxContainer" parent="Control" unique_id=218025010]
+layout_mode = 0
+offset_left = 296.0
+offset_top = -210.0
+offset_right = 516.0
+offset_bottom = 146.0
+
+[node name="Profile" type="Container" parent="Control/Account" unique_id=1946950779]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+
+[node name="Profile" type="Node2D" parent="Control/Account/Profile" unique_id=99033654]
+position = Vector2(110, 120)
+
+[node name="Outline" type="MeshInstance2D" parent="Control/Account/Profile/Profile" unique_id=2043201831]
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+scale = Vector2(204.00002, 204.00002)
+mesh = SubResource("SphereMesh_noarx")
+
+[node name="Background" type="MeshInstance2D" parent="Control/Account/Profile/Profile/Outline" unique_id=1149727436]
+self_modulate = Color(0.54, 0.54, 0.54, 1)
+clip_children = 2
+scale = Vector2(0.83333325, 0.83333325)
+mesh = SubResource("SphereMesh_noarx")
+
+[node name="Human" type="MeshInstance2D" parent="Control/Account/Profile/Profile/Outline/Background" unique_id=1373688054]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(0, -0.135)
+scale = Vector2(0.33, 0.33)
+mesh = SubResource("SphereMesh_i0g27")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="Control/Account/Profile/Profile/Outline/Background/Human" unique_id=1277812659]
+position = Vector2(0, 1.83)
+scale = Vector2(1.495, 1.495)
+mesh = SubResource("CapsuleMesh_ealrb")
+
+[node name="Info" type="VBoxContainer" parent="Control/Account" unique_id=1205901470]
+layout_mode = 2
+alignment = 1
+
+[node name="Username" type="HBoxContainer" parent="Control/Account/Info" unique_id=468819634]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Account/Info/Username" unique_id=1395688223]
+layout_mode = 2
+text = "Username: "
+
+[node name="value" type="Label" parent="Control/Account/Info/Username" unique_id=1361146635]
+layout_mode = 2
+text = "Placeholder"
+
+[node name="Created" type="HBoxContainer" parent="Control/Account/Info" unique_id=834133591]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Account/Info/Created" unique_id=1569871192]
+layout_mode = 2
+text = "Created: "
+
+[node name="value" type="Label" parent="Control/Account/Info/Created" unique_id=792743498]
+layout_mode = 2
+text = "Placeholder"
+
+[node name="Highscore" type="HBoxContainer" parent="Control/Account/Info" unique_id=799865204]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Account/Info/Highscore" unique_id=81491193]
+layout_mode = 2
+text = "Highscore: "
+
+[node name="value" type="Label" parent="Control/Account/Info/Highscore" unique_id=1610942545]
+layout_mode = 2
+text = "Placeholder"
+
+[node name="LastScore" type="HBoxContainer" parent="Control/Account/Info" unique_id=947233051]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Account/Info/LastScore" unique_id=1126023272]
+layout_mode = 2
+text = "Last game: "
+
+[node name="value" type="Label" parent="Control/Account/Info/LastScore" unique_id=883895457]
+layout_mode = 2
+text = "Placeholder"
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="Control/Account" unique_id=154680797]
+self_modulate = Color(0.19, 0.19, 0.19, 1)
+show_behind_parent = true
+position = Vector2(110.00001, 182.87498)
+scale = Vector2(263.99994, 378.24997)
+mesh = SubResource("BoxMesh_jsnrv")
+
+[node name="quit" type="Button" parent="Control" unique_id=992519208]
+layout_mode = 0
+offset_left = 428.0
+offset_top = -308.0
+offset_right = 539.0
+offset_bottom = -231.0
+theme_override_font_sizes/font_size = 50
+text = "EXIT"
+
+[connection signal="button_up" from="Control/Play" to="." method="_on_play_button_up"]
+[connection signal="drag_ended" from="Control/Settings/fps/HSlider" to="." method="_on_h_slider_drag_ended" flags=18]
+[connection signal="pressed" from="Control/Settings/vsync/Button" to="." method="_on_vsync_button_pressed"]
+[connection signal="item_selected" from="Control/Settings/window/display/OptionButton" to="." method="_on_option_button_item_selected"]
+[connection signal="item_selected" from="Control/Settings/window/resolution/OptionButton" to="." method="_on_resolution_selected" flags=18]
+[connection signal="pressed" from="Control/Input/layer/Forward/keybind" to="." method="_on_keybind_pressed" flags=18]
+[connection signal="pressed" from="Control/Input/layer2/Left/keybind" to="." method="_on_keybind_pressed" flags=18]
+[connection signal="pressed" from="Control/Input/layer2/Backwards/keybind" to="." method="_on_keybind_pressed" flags=18]
+[connection signal="pressed" from="Control/Input/layer2/Right/keybind" to="." method="_on_keybind_pressed" flags=18]
+[connection signal="pressed" from="Control/quit" to="." method="_on_quit_pressed"]

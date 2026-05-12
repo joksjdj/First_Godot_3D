@@ -49,7 +49,6 @@ extends CharacterBody3D
 @onready var mouse_captured : bool = false
 @onready var look_rotation : Vector2
 @onready var move_speed : float = 0.0
-@onready var freeflying : bool = false
 
 ## IMPORTANT REFERENCES
 @onready var head: Node3D = $Head
@@ -68,8 +67,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Mouse capturing
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		capture_mouse()
-	if Input.is_key_pressed(KEY_ESCAPE):
-		free_queue()
 	
 	# Look around
 	if mouse_captured and event is InputEventMouseMotion:
@@ -148,10 +145,6 @@ func health_change():
 	
 func free_queue():
 	alive = false
-	release_mouse()
-	var area = get_parent().get_node("Area2D")
-	area.visible = true
-	area.get_node("Control").MOUSE_FILTER_STOP
 	queue_free()
 
 ## Rotate us to look around.
