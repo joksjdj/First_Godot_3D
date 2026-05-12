@@ -8,16 +8,14 @@ script/source = "extends CharacterBody3D
 
 var health = 3
 @onready var Head = $Head
-@onready var cooldown = 0
+@onready var cooldown: int = 0
 @onready var detect_player: bool = false
 @onready var walk_path: PathFollow3D
 var follow_player: bool = false
 var player: CharacterBody3D
 
 func _ready():
-	while true:
-		await get_tree().create_timer(1.0).timeout
-		cooldown -= 1
+	pass
 	
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_key_pressed(KEY_ESCAPE):
@@ -44,8 +42,8 @@ func _physics_process(delta: float) -> void:
 			if $Head/Aim.is_colliding():
 				var hit = $Head/Aim.get_collider()
 				if hit:
-					if hit.name == \"MainPlayer\" and cooldown < 1:
-						cooldown = 2
+					if hit.name == \"MainPlayer\" and Global.cooldown - cooldown > 1:
+						cooldown = Global.cooldown
 						spawn_bullet()
 		elif follow_player:
 			global_position = global_transform.origin + -global_transform.basis.z * 0.15

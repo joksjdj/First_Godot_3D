@@ -5,8 +5,6 @@
 
 extends CharacterBody3D
 
-@onready var health = 3
-
 @onready var thread = Thread.new()
 
 ## Can we move around?
@@ -61,8 +59,6 @@ func _ready() -> void:
 	look_rotation.y = rotation.y
 	look_rotation.x = head.rotation.x
 	
-	thread.start(_health_monitor)
-
 func _unhandled_input(event: InputEvent) -> void:
 	# Mouse capturing
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
@@ -116,36 +112,6 @@ func _physics_process(delta: float) -> void:
 		$CanvasLayer/TextureRect/EnemyMonitoring/EnemiesLeft.text = str(enemies_left.enemies_left)
 		$CanvasLayer/TextureRect/EnemyMonitoring/Score.text = str(enemies_left.score)
 		
-
-@onready var hearts = $CanvasLayer/TextureRect/health
-@onready var hearts_left = hearts.get_child_count()
-@onready var await_health_change = false
-@onready var alive = true
-func _health_monitor():
-	while alive:
-		if health < 1:
-			alive = false
-			call_deferred("free_queue")
-			
-		if !alive:
-			return
-		
-		if health < hearts_left and !await_health_change:
-			await_health_change = true
-			call_deferred("health_change")
-			
-		OS.delay_msec(50)
-
-func health_change():
-	hearts_left -= 1
-	var heart = hearts.get_child(hearts.get_child_count() - 1)
-	heart.queue_free()
-	await_health_change = false
-	
-	
-func free_queue():
-	alive = false
-	queue_free()
 
 ## Rotate us to look around.
 ## Base of controller rotates around y (left/right). Head rotates around x (up/down).
