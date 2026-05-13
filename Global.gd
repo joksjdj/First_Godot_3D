@@ -14,9 +14,13 @@ extends Node
 # Player
 @onready var player_health = 3
 @onready var heart_container
+@onready var player_head_pos: Vector3
 
 # Global
 @onready var cooldown = 0
+var enemies_left: int = 0
+var score: int = 0
+var main_player: CharacterBody3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -37,9 +41,10 @@ func cooldown_thread():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	var main_player = get_node_or_null("/root/Main/MainPlayer")
+	main_player = get_node_or_null("/root/Main/MainPlayer")
 	
 	if main_player:
+		player_head_pos = main_player.get_node("Head").global_position
 		if player_health < 1:
 			main_player.queue_free()
 			release_mouse()
@@ -89,3 +94,18 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 		get_node_or_null("/root/Main/Login").queue_free()
 		var menu = start_menu.instantiate()
 		get_node_or_null("/root/Main").add_child(menu)
+
+@onready var unsaved_json
+func save_json():
+	var new_json = JSON.stringify(unsaved_json, "\t")
+	var file = FileAccess.open("res://Local_storage/Settings.json", FileAccess.WRITE)
+	file.store_string(new_json)
+	file.close()
+
+func close_game_safely():
+		save_json()
+		get_tree().quit()
+	
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		close_game_safely()

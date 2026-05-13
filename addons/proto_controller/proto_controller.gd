@@ -109,8 +109,8 @@ func _physics_process(delta: float) -> void:
 	
 	var enemies_left: Node3D = get_tree().current_scene.get_node_or_null("Enemies")
 	if enemies_left:
-		$CanvasLayer/TextureRect/EnemyMonitoring/EnemiesLeft.text = str(enemies_left.enemies_left)
-		$CanvasLayer/TextureRect/EnemyMonitoring/Score.text = str(enemies_left.score)
+		$CanvasLayer/TextureRect/EnemyMonitoring/EnemiesLeft.text = str(Global.enemies_left)
+		$CanvasLayer/TextureRect/EnemyMonitoring/Score.text = str(Global.score)
 		
 
 ## Rotate us to look around.
@@ -139,12 +139,15 @@ func smooth_fov(target_fov: float, duration: float = 0.5):
 	tween.tween_property(camera, "fov", target_fov, duration)
 
 
+var last_grapple: int = 0
 func _input(event):
 	if event.is_action_pressed("MouseLeft"):
 		spawn_bullet()
 		
 	if event.is_action_pressed("MouseRight"):
-		grappling()
+		if Global.cooldown - last_grapple >= 1:
+			last_grapple = Global.cooldown
+			grappling()
 		
 @export var object_to_spawn: PackedScene
 func spawn_bullet():
@@ -164,3 +167,13 @@ func grappling_action():
 		position.x = lerp(position.x, grappling_pos.x, 0.01)
 		position.z = lerp(position.z, grappling_pos.z, 0.01)
 		position.y = lerp(position.y, grappling_pos.y, 0.02)
+
+
+func _on_enemy_detect_body_entered(body) -> void:
+	print(body, "In range")
+	body.detect_player = true
+	body.follow_player = true
+
+func _on_enemy_detect_body_exited(body) -> void:
+	print("Out of range")
+	body.detect_player = false

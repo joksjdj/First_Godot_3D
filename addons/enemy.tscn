@@ -8,11 +8,10 @@ script/source = "extends CharacterBody3D
 
 var health = 3
 @onready var Head = $Head
-@onready var cooldown: int = 0
+@onready var last_attack: int = 0
 @onready var detect_player: bool = false
-@onready var walk_path: PathFollow3D
 var follow_player: bool = false
-var player: CharacterBody3D
+@onready var walk_path: PathFollow3D
 
 func _ready():
 	pass
@@ -26,24 +25,23 @@ func _physics_process(delta: float) -> void:
 		velocity += get_gravity() * delta
 		
 	if health < 1:
-		get_tree().current_scene.get_node(\"Enemies\").enemies_left -= 1
-		get_tree().current_scene.get_node(\"Enemies\").score += 1
+		Global.enemies_left -= 1
+		Global.score += 1
 		queue_free()
 		
 	move_and_slide()
 	
 	if detect_player or follow_player:
-		player = get_tree().current_scene.get_node_or_null(\"MainPlayer\")
-		if player:
-			Head.look_at(player.get_node(\"Head\").global_position, Vector3.UP)
+		if Global.player:
+			Head.look_at(Global.player_head_pos, Vector3.UP)
 			global_rotation.y = Head.global_rotation.y
 			
 		if detect_player:
 			if $Head/Aim.is_colliding():
 				var hit = $Head/Aim.get_collider()
 				if hit:
-					if hit.name == \"MainPlayer\" and Global.cooldown - cooldown > 1:
-						cooldown = Global.cooldown
+					if hit.name == \"MainPlayer\" and Global.cooldown - last_attack > 1:
+						last_attack = Global.cooldown
 						spawn_bullet()
 		elif follow_player:
 			global_position = global_transform.origin + -global_transform.basis.z * 0.15
@@ -67,14 +65,6 @@ func spawn_bullet():
 	obj.global_position = Head.global_transform.origin + -Head.global_transform.basis.z
 	
 
-func _on_area_3d_body_entered(body) -> void:
-	print(\"In range\")
-	detect_player = true
-	follow_player = true
-func _on_area_3d_body_exited(body) -> void:
-	print(\"Out of range\")
-	detect_player = false
-
 func rotate_detected() -> void:
 	var t = global_transform
 	t.basis = Head.global_transform.basis.rotated(Vector3.UP, deg_to_rad(5))
@@ -92,9 +82,6 @@ albedo_color = Color(0.91806, 0.575202, 0.222449, 1)
 radius = 0.4
 height = 1.8
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_upa07"]
-size = Vector3(1, 1.2489014, 1.5605469)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ovji"]
 albedo_color = Color(0.13, 0.9130001, 1, 1)
 
@@ -102,21 +89,17 @@ albedo_color = Color(0.13, 0.9130001, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0weul"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_upa07"]
-radius = 10.0
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_upa07"]
 viewport_path = NodePath("Sprite3D/SubViewport")
 
 [node name="Enemy" type="CharacterBody3D" unique_id=802950666]
 transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, 0, 0)
-collision_mask = 17
 slide_on_ceiling = false
 script = SubResource("GDScript_upa07")
 object_to_spawn = ExtResource("1_upa07")
 
 [node name="Enemy" type="CollisionShape3D" parent="." unique_id=1823100976]
-transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 1.0805237, 0.020645147)
+transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 1.081, 0)
 shape = SubResource("CylinderShape3D_upa07")
 
 [node name="Body" type="MeshInstance3D" parent="." unique_id=777808813]
@@ -124,13 +107,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09711, 0)
 material_override = SubResource("StandardMaterial3D_fcg7d")
 gi_mode = 2
 mesh = SubResource("CapsuleMesh_upa07")
-
-[node name="Obsticle" type="Area3D" parent="Body" unique_id=1138479424]
-collision_layer = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Obsticle" unique_id=1338388187]
-transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 1.6718655e-14, 0, -1.6718655e-14, 1.0000002, 0, 0.124450445, -1.2792745)
-shape = SubResource("BoxShape3D_upa07")
 
 [node name="Head" type="Node3D" parent="." unique_id=1046566719]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
@@ -154,15 +130,7 @@ mesh = SubResource("BoxMesh_0weul")
 
 [node name="Aim" type="RayCast3D" parent="Head" unique_id=927069417]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
-target_position = Vector3(0, -10, 0)
-
-[node name="EnemyDetect" type="Area3D" parent="." unique_id=439488297]
-collision_layer = 0
-collision_mask = 16
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyDetect" unique_id=1413491364]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-shape = SubResource("SphereShape3D_upa07")
+target_position = Vector3(0, -15, 0)
 
 [node name="Sprite3D" type="Sprite3D" parent="." unique_id=99927184]
 transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 2.376079, 0)
@@ -216,8 +184,3 @@ default_color = Color(0, 0, 0, 1)
 [node name="Polygon2D" type="Polygon2D" parent="Sprite3D/SubViewport/Node2D/heart3/Line2D" unique_id=971279694]
 color = Color(1, 0, 0, 1)
 polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
-
-[connection signal="body_entered" from="Body/Obsticle" to="." method="_on_obsticle_body_entered"]
-[connection signal="body_exited" from="Body/Obsticle" to="." method="_on_obsticle_body_exited"]
-[connection signal="body_entered" from="EnemyDetect" to="." method="_on_area_3d_body_entered"]
-[connection signal="body_exited" from="EnemyDetect" to="." method="_on_area_3d_body_exited"]

@@ -22,10 +22,11 @@ albedo_color = Color(0.13, 0.9130001, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_4arys"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_8poij"]
+radius = 10.0
+
 [node name="MainPlayer" type="CharacterBody3D" unique_id=1996959735]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 7)
-collision_layer = 17
-collision_mask = 17
 script = ExtResource("1_8poij")
 object_to_spawn = ExtResource("2_jo1w2")
 grappling_to_spawn = ExtResource("3_c7qvv")
@@ -213,3 +214,15 @@ text = "| Score: "
 [node name="Score" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=81449896]
 layout_mode = 2
 text = "0"
+
+[node name="EnemyDetect" type="Area3D" parent="." unique_id=1713009195]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9417896, 0)
+collision_layer = 0
+collision_mask = 16
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyDetect" unique_id=1795396144]
+shape = SubResource("SphereShape3D_8poij")
+
+[connection signal="body_entered" from="EnemyDetect" to="." method="_on_enemy_detect_body_entered"]
+[connection signal="body_exited" from="EnemyDetect" to="." method="_on_enemy_detect_body_exited"]

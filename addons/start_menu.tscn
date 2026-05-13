@@ -10,8 +10,6 @@ script/source = "extends Area2D
 @export var character_to_spawn: PackedScene
 @export var enemy_area: PackedScene
 
-@onready var unsaved_json
-
 var keybind_name = \"none\"
 var keybind
 
@@ -19,18 +17,18 @@ func _ready() -> void:
 	var file = FileAccess.open(\"res://Local_storage/Settings.json\", FileAccess.READ)
 	var content = file.get_as_text()
 	file.close()
-	unsaved_json = JSON.parse_string(content)
+	Global.unsaved_json = JSON.parse_string(content)
 	
-	change_fps_limiter(unsaved_json.fps)
+	change_fps_limiter(Global.unsaved_json.fps)
 	
-	change_vsync_status(unsaved_json.vsync)
+	change_vsync_status(Global.unsaved_json.vsync)
 	
-	select_display_mode(unsaved_json.window_display)
+	select_display_mode(Global.unsaved_json.window_display)
 	
-	change_resolution(unsaved_json.resolution)
+	change_resolution(Global.unsaved_json.resolution)
 	
-	for action in unsaved_json.keybind.keys():
-		var value = unsaved_json.keybind[action]
+	for action in Global.unsaved_json.keybind.keys():
+		var value = Global.unsaved_json.keybind[action]
 		change_keybind(value, action)
 	
 	get_account_info()
@@ -54,7 +52,7 @@ func change_keybind(key: int, action_name):
 	ev.keycode = key
 	InputMap.action_add_event(action_name, ev)
 	
-	unsaved_json.keybind[action_name] = key
+	Global.unsaved_json.keybind[action_name] = key
 	
 	var buttons_group = get_tree().get_nodes_in_group(\"InputButtons\")
 	for button in buttons_group:
@@ -68,7 +66,7 @@ func _on_h_slider_drag_ended(value_changed: bool, source: HSlider) -> void:
 		change_fps_limiter(source.value)
 	
 func change_fps_limiter(value: int):
-	unsaved_json.fps = value
+	Global.unsaved_json.fps = value
 	var fps_container = $Control/Settings/fps/text/value
 	$Control/Settings/fps/HSlider.value = value
 	fps_container.text = str(value)
@@ -87,7 +85,7 @@ func _on_vsync_button_pressed() -> void:
 		
 func change_vsync_status(status):
 	if status == \"OFF\" or status == \"ON\":
-		unsaved_json.vsync = status
+		Global.unsaved_json.vsync = status
 		var vsync_container = $Control/Settings/vsync/Button
 		if status == \"ON\":
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
@@ -102,7 +100,7 @@ func _on_resolution_selected(_index: int, source: BaseButton) -> void:
 	change_resolution(res)
 
 func change_resolution(res: int):
-	unsaved_json.resolution = res
+	Global.unsaved_json.resolution = res
 	var short
 	if res == 3840:
 		short =  res * (9.0 / 16)
@@ -118,7 +116,7 @@ func _on_option_button_item_selected(index: int) -> void:
 	select_display_mode(index)
 	
 func select_display_mode(index: int):
-	unsaved_json.window_display = index
+	Global.unsaved_json.window_display = index
 	$Control/Settings/window/display/OptionButton.select(index)
 	if index == 0:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -134,25 +132,19 @@ func get_account_info():
 	$Control/Account/Info/Highscore/value.text = str(Global.highscore)
 	$Control/Account/Info/LastScore/value.text = str(Global.last_game)
 
-func save_json():
-	var new_json = JSON.stringify(unsaved_json, \"\\t\")
-	var file = FileAccess.open(\"res://Local_storage/Settings.json\", FileAccess.WRITE)
-	file.store_string(new_json)
-	file.close()
 
 func _on_play_button_up():
-	save_json()
+	var area = enemy_area.instantiate()
+	get_parent().add_child(area)
+	OS.delay_msec(500)
 	print(\"Play pressed\")
 	var character = character_to_spawn.instantiate()
 	get_parent().add_child(character)
 	queue_free()
 	
-	var area = enemy_area.instantiate()
-	get_parent().add_child(area)
 	
 func _on_quit_pressed() -> void:
-	save_json()
-	get_tree().quit()
+	Global.close_game_safely()
 "
 
 [sub_resource type="SphereMesh" id="SphereMesh_noarx"]
