@@ -17,18 +17,18 @@ func _ready() -> void:
 	var file = FileAccess.open(\"res://Local_storage/Settings.json\", FileAccess.READ)
 	var content = file.get_as_text()
 	file.close()
-	Global.unsaved_json = JSON.parse_string(content)
+	Global_funcs.unsaved_json = JSON.parse_string(content)
 	
-	change_fps_limiter(Global.unsaved_json.fps)
+	change_fps_limiter(Global_funcs.unsaved_json.fps)
 	
-	change_vsync_status(Global.unsaved_json.vsync)
+	change_vsync_status(Global_funcs.unsaved_json.vsync)
 	
-	select_display_mode(Global.unsaved_json.window_display)
+	select_display_mode(Global_funcs.unsaved_json.window_display)
 	
-	change_resolution(Global.unsaved_json.resolution)
+	change_resolution(Global_funcs.unsaved_json.resolution)
 	
-	for action in Global.unsaved_json.keybind.keys():
-		var value = Global.unsaved_json.keybind[action]
+	for action in Global_funcs.unsaved_json.keybind.keys():
+		var value = Global_funcs.unsaved_json.keybind[action]
 		change_keybind(value, action)
 	
 	get_account_info()
@@ -52,7 +52,7 @@ func change_keybind(key: int, action_name):
 	ev.keycode = key
 	InputMap.action_add_event(action_name, ev)
 	
-	Global.unsaved_json.keybind[action_name] = key
+	Global_funcs.unsaved_json.keybind[action_name] = key
 	
 	var buttons_group = get_tree().get_nodes_in_group(\"InputButtons\")
 	for button in buttons_group:
@@ -66,7 +66,7 @@ func _on_h_slider_drag_ended(value_changed: bool, source: HSlider) -> void:
 		change_fps_limiter(source.value)
 	
 func change_fps_limiter(value: int):
-	Global.unsaved_json.fps = value
+	Global_funcs.unsaved_json.fps = value
 	var fps_container = $Control/Settings/fps/text/value
 	$Control/Settings/fps/HSlider.value = value
 	fps_container.text = str(value)
@@ -85,7 +85,7 @@ func _on_vsync_button_pressed() -> void:
 		
 func change_vsync_status(status):
 	if status == \"OFF\" or status == \"ON\":
-		Global.unsaved_json.vsync = status
+		Global_funcs.unsaved_json.vsync = status
 		var vsync_container = $Control/Settings/vsync/Button
 		if status == \"ON\":
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
@@ -100,7 +100,7 @@ func _on_resolution_selected(_index: int, source: BaseButton) -> void:
 	change_resolution(res)
 
 func change_resolution(res: int):
-	Global.unsaved_json.resolution = res
+	Global_funcs.unsaved_json.resolution = res
 	var short
 	if res == 3840:
 		short =  res * (9.0 / 16)
@@ -116,7 +116,7 @@ func _on_option_button_item_selected(index: int) -> void:
 	select_display_mode(index)
 	
 func select_display_mode(index: int):
-	Global.unsaved_json.window_display = index
+	Global_funcs.unsaved_json.window_display = index
 	$Control/Settings/window/display/OptionButton.select(index)
 	if index == 0:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -134,9 +134,6 @@ func get_account_info():
 
 
 func _on_play_button_up():
-	var area = enemy_area.instantiate()
-	get_parent().add_child(area)
-	OS.delay_msec(500)
 	print(\"Play pressed\")
 	var character = character_to_spawn.instantiate()
 	get_parent().add_child(character)
@@ -144,7 +141,7 @@ func _on_play_button_up():
 	
 	
 func _on_quit_pressed() -> void:
-	Global.close_game_safely()
+	Global_funcs.close_game_safely()
 "
 
 [sub_resource type="SphereMesh" id="SphereMesh_noarx"]

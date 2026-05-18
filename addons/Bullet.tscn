@@ -7,15 +7,17 @@ func _physics_process(delta: float) -> void:
 	if $RayCast3D.is_colliding():
 		var hit = $RayCast3D.get_collider()
 		if hit.name == \"MainPlayer\":
-			Global.player_health -= 1
+			if Global.cooldown - Global.player_last_hit >= 1:
+				Global.player_health -= 1
 			print(\"Hit:\", hit.name, \"| Health:\", Global.player_health)
 		elif hit.name == \"Enemy\":
-			hit.follow_player = true
-			hit.health -= 1
-			var all_hearts = hit.get_node(\"Sprite3D\").get_node(\"SubViewport\").get_node(\"Node2D\")
-			var heart = all_hearts.get_child(all_hearts.get_child_count() - 1)
-			heart.queue_free()
-			print(\"Hit:\", hit.name, \"| Health:\", hit.health)
+			if hit:
+				hit.follow_player = true
+				hit.health -= 1
+				var all_hearts = hit.get_node(\"Sprite3D/SubViewport/Node2D\")
+				var heart = all_hearts.get_child(all_hearts.get_child_count() - 1)
+				heart.queue_free()
+				print(\"Hit:\", hit.name, \"| Health:\", hit.health)
 		else:
 			print(\"Hit:\", hit.name, \"|\", hit)
 		queue_free()

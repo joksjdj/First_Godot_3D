@@ -44,28 +44,24 @@ extends CharacterBody3D
 @onready var grappling_pos
 @onready var is_grappling = false
 
-@onready var mouse_captured : bool = false
 @onready var look_rotation : Vector2
 @onready var move_speed : float = 0.0
 
 ## IMPORTANT REFERENCES
 @onready var head: Node3D = $Head
-@onready var collider: CollisionShape3D = $Collider
 
 ## UI Elements
 @onready var fps_value: Label = $CanvasLayer/TextureRect/VBoxContainer/fps/value
+@onready var enemies_left: Label = $CanvasLayer/TextureRect/EnemyMonitoring/EnemiesLeft
+@onready var score_label: Label = $CanvasLayer/TextureRect/EnemyMonitoring/Score
 
 func _ready() -> void:
 	look_rotation.y = rotation.y
 	look_rotation.x = head.rotation.x
 	
 func _unhandled_input(event: InputEvent) -> void:
-	# Mouse capturing
-	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		capture_mouse()
-	
 	# Look around
-	if mouse_captured and event is InputEventMouseMotion:
+	if Global.mouse_captured and event is InputEventMouseMotion:
 		rotate_look(event.relative)
 
 func _physics_process(delta: float) -> void:
@@ -107,10 +103,9 @@ func _physics_process(delta: float) -> void:
 	var fps = Engine.get_frames_per_second()
 	fps_value.text = str(fps)
 	
-	var enemies_left: Node3D = get_tree().current_scene.get_node_or_null("Enemies")
-	if enemies_left:
-		$CanvasLayer/TextureRect/EnemyMonitoring/EnemiesLeft.text = str(Global.enemies_left)
-		$CanvasLayer/TextureRect/EnemyMonitoring/Score.text = str(Global.score)
+	if Global.enemies_left:
+		enemies_left.text = str(Global.enemies_left)
+		score_label.text = str(Global.score)
 		
 
 ## Rotate us to look around.
@@ -126,14 +121,6 @@ func rotate_look(rot_input : Vector2):
 	head.rotate_x(look_rotation.x)
 
 
-func capture_mouse():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	mouse_captured = true
-func release_mouse():
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	mouse_captured = false
-
-
 func smooth_fov(target_fov: float, duration: float = 0.5):
 	var tween = create_tween()
 	tween.tween_property(camera, "fov", target_fov, duration)
@@ -142,20 +129,13 @@ func smooth_fov(target_fov: float, duration: float = 0.5):
 var last_grapple: int = 0
 func _input(event):
 	if event.is_action_pressed("MouseLeft"):
-		spawn_bullet()
+		Global_funcs.spawn_bullet(camera)
 		
 	if event.is_action_pressed("MouseRight"):
 		if Global.cooldown - last_grapple >= 1:
 			last_grapple = Global.cooldown
 			grappling()
 		
-@export var object_to_spawn: PackedScene
-func spawn_bullet():
-	var obj = object_to_spawn.instantiate()
-	var area = get_parent().get_node("Area3D")
-	area.add_child(obj)
-	obj.global_transform.basis = camera.global_transform.basis.orthonormalized()
-	obj.global_position = camera.global_transform.origin + -camera.global_transform.basis.z
 
 @export var grappling_to_spawn: PackedScene
 func grappling():

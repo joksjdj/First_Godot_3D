@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bjpcpkarrakqi"]
 
 [ext_resource type="Script" uid="uid://c1nkb217t4usv" path="res://addons/proto_controller/proto_controller.gd" id="1_8poij"]
-[ext_resource type="PackedScene" uid="uid://dc8eu8t0twpix" path="res://addons/Bullet.tscn" id="2_jo1w2"]
 [ext_resource type="PackedScene" uid="uid://csxicr2s7p5uv" path="res://addons/grappling.tscn" id="3_c7qvv"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iof21"]
@@ -25,10 +24,8 @@ albedo_color = Color(0.13, 0.9130001, 1, 1)
 [sub_resource type="SphereShape3D" id="SphereShape3D_8poij"]
 radius = 10.0
 
-[node name="MainPlayer" type="CharacterBody3D" unique_id=1996959735]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 7)
+[node name="MainPlayer" type="CharacterBody3D" unique_id=1996959735 groups=["Play_packets"]]
 script = ExtResource("1_8poij")
-object_to_spawn = ExtResource("2_jo1w2")
 grappling_to_spawn = ExtResource("3_c7qvv")
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=1005837819]
@@ -214,6 +211,23 @@ text = "| Score: "
 [node name="Score" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=81449896]
 layout_mode = 2
 text = "0"
+
+[node name="Status" type="VBoxContainer" parent="CanvasLayer/TextureRect" unique_id=1093054163]
+visible = false
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+
+[node name="Node2D" type="Node2D" parent="CanvasLayer/TextureRect/Status" unique_id=1094823342]
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/Status/Node2D" unique_id=743079903]
+points = PackedVector2Array(0, 0, 64, 16, 128, 0, 128, 112, 64, 144, 0, 112)
+closed = true
 
 [node name="EnemyDetect" type="Area3D" parent="." unique_id=1713009195]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9417896, 0)

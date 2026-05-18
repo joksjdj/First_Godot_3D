@@ -1,8 +1,10 @@
 extends Node
 
-# Menus
+# PackedScene
 @export var login_menu: PackedScene = preload("res://addons/login.tscn")
 @export var start_menu: PackedScene = preload("res://addons/start_menu.tscn")
+@export var bullet_to_spawn: PackedScene = preload("res://addons/Bullet.tscn")
+@export var enemy_to_spawn: PackedScene = preload("res://addons/enemy.tscn")
 
 # Account
 @export var id: int
@@ -15,12 +17,14 @@ extends Node
 @onready var player_health = 3
 @onready var heart_container
 @onready var player_head_pos: Vector3
+var player_last_hit: int = 0
 
-# Global
+# Global tracking
 @onready var cooldown = 0
 var enemies_left: int = 0
 var score: int = 0
 var main_player: CharacterBody3D
+@onready var mouse_captured : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -47,7 +51,7 @@ func _process(delta: float) -> void:
 		player_head_pos = main_player.get_node("Head").global_position
 		if player_health < 1:
 			main_player.queue_free()
-			release_mouse()
+			Global_funcs.release_mouse()
 			var menu = start_menu.instantiate()
 			get_node_or_null("/root/Main").add_child(menu)
 		
@@ -59,20 +63,11 @@ func _process(delta: float) -> void:
 				if player_health < hearts_left:
 					var heart = heart_container.get_child(heart_container.get_child_count() - 1)
 					heart.queue_free()
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if Input.is_key_pressed(KEY_ESCAPE):
-		var main_player = get_node_or_null("/root/Main/MainPlayer")
-		if main_player:
-			release_mouse()
-			main_player.queue_free()
-			var menu = start_menu.instantiate()
-			get_node_or_null("/root/Main").add_child(menu)
-
-func release_mouse():
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
+					
+					
+		if enemies_left <= 0:
+			var points = get_node("/root/Main/Area3D/SpawnPoint").get_children()
+			Global_funcs.spawn_enemies(points)
 
 func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	var text = body.get_string_from_utf8()
@@ -95,17 +90,7 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 		var menu = start_menu.instantiate()
 		get_node_or_null("/root/Main").add_child(menu)
 
-@onready var unsaved_json
-func save_json():
-	var new_json = JSON.stringify(unsaved_json, "\t")
-	var file = FileAccess.open("res://Local_storage/Settings.json", FileAccess.WRITE)
-	file.store_string(new_json)
-	file.close()
-
-func close_game_safely():
-		save_json()
-		get_tree().quit()
 	
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		close_game_safely()
+		Global_funcs.close_game_safely()

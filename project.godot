@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Global="*uid://ba3wxr2s7trn7"
+Global_funcs="*uid://btwdnfm7dqd47"
 
 [display]
 
@@ -26,6 +27,10 @@ window/size/borderless=true
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/csg_converter/plugin.cfg")
+
+[global_group]
+
+Play_packets=""
 
 [input]
 
