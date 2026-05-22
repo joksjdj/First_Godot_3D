@@ -18,16 +18,25 @@ extends Node
 @onready var heart_container
 @onready var player_head_pos: Vector3
 var player_last_hit: int = 0
+var player_rot: Vector3
 
 # Global tracking
 @onready var cooldown = 0
 var enemies_left: int = 0
+var spawning_enemies: bool = false
 var score: int = 0
 var main_player: CharacterBody3D
 @onready var mouse_captured : bool = false
+var playing: bool = false
+@onready var frame_passed := 0
+
+var ws := WebSocketPeer.new()
+var connected := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	ws.connect_to_url("ws://alexanderpi:8081")
+	
 	var menu = login_menu.instantiate()
 	get_node_or_null("/root/Main").add_child(menu)
 
@@ -45,6 +54,36 @@ func cooldown_thread():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	frame_passed += 1
+	ws.poll()
+
+	match ws.get_ready_state():
+		WebSocketPeer.STATE_OPEN:
+			if not connected:
+				connected = true
+				print("Connected to Rust server")
+				Global_funcs.message_to_server("create_lobby")
+				
+			if frame_passed >= 30:
+				frame_passed = 0
+				if playing:
+					print("\nrequesting info")
+					Global_funcs.message_to_server("get_info")
+
+			while Global.ws.get_available_packet_count() > 0:
+					var raw = Global.ws.get_packet().get_string_from_utf8()
+					var json = JSON.parse_string(raw)
+
+					if json == null:
+						print("Invalid JSON from server:", raw)
+					else:
+						print("Received JSON:", json)
+						
+		WebSocketPeer.STATE_CLOSED:
+			if connected:
+				connected = false
+				print("Disconnected from server")
+				
 	main_player = get_node_or_null("/root/Main/MainPlayer")
 	
 	if main_player:
@@ -65,7 +104,8 @@ func _process(delta: float) -> void:
 					heart.queue_free()
 					
 					
-		if enemies_left <= 0:
+		if enemies_left <= 0 and !spawning_enemies:
+			spawning_enemies = true
 			var points = get_node("/root/Main/Area3D/SpawnPoint").get_children()
 			Global_funcs.spawn_enemies(points)
 

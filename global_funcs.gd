@@ -10,13 +10,15 @@ func save_json():
 
 
 func close_game_safely():
-		save_json()
-		get_tree().quit()
+	Global.ws.close()
+	save_json()
+	get_tree().quit()
 
 func _unhandled_input(event: InputEvent) -> void:
 	var main_player = get_node_or_null("/root/Main/MainPlayer")
 	if main_player:
 		if Input.is_key_pressed(KEY_ESCAPE):
+				Global.playing = false
 				print(get_tree().get_nodes_in_group("Play_packets"))
 				release_mouse()
 				var play_packets = get_tree().get_nodes_in_group("Play_packets")
@@ -43,7 +45,10 @@ func spawn_bullet(head):
 	bullet.global_position = head.global_transform.origin + -head.global_transform.basis.z
 
 func spawn_enemies(points):
+	points.shuffle()
 	for spawn in points:
+		if Global.enemies_left >= 7:
+			break
 		Global.enemies_left += 1
 		var enemy = Global.enemy_to_spawn.instantiate()
 		enemy.walk_path = spawn.get_node("Path3D/PathFollow3D")
@@ -51,4 +56,14 @@ func spawn_enemies(points):
 		enemy.set_collision_layer_value(5, true)
 		spawn.add_child(enemy)
 		
+	Global.spawning_enemies = false
 		
+func message_to_server(req: String):
+	if Global.ws.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		print("sending msg func")
+		var msg = {
+			"id": str(Global.id),
+			"req": str(req),
+			"lobby_id": "1"
+		}
+		Global.ws.send_text(JSON.stringify(msg))
