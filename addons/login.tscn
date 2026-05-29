@@ -4,6 +4,7 @@
 resource_name = "LoginMenu"
 script/source = "extends Area2D
 
+var crypto = Crypto.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -13,37 +14,37 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func check_password_and_username(url: String):
+func check_password_and_username(req_type: String):
 	var username = $Control/VBoxContainer/Username/LineEdit.text
 	var password = $Control/VBoxContainer/Password/LineEdit.text
 	
-	if password == \"\":
-		$Control/VBoxContainer/ErrorContainer.text = \"Invalid password\"
+	if password == \"\" or username == \"\":
+		$Control/VBoxContainer/ErrorContainer.text = \"Invalid username or password\"
 		return
-		
+
+	var salt_bytes: PackedByteArray = crypto.generate_random_bytes(32)
+	var salt_hex: String = salt_bytes.hex_encode()
+	
+	var ctx = HashingContext.new()
+	ctx.start(HashingContext.HASH_SHA256)
+	ctx.update((password + salt_hex).to_utf8_buffer())
+	var safe_password = ctx.finish().hex_encode()
+
+	print(safe_password)
 	var body = {
 		\"username\": username,
-		\"password\": password
+		\"password\": safe_password
 	}
 
 	var headers = [\"Content-Type: application/json\"]
 
-	var http = get_parent().get_node(\"HTTPRequest\")
-
-	http.request(
-		url,
-		headers,
-		HTTPClient.METHOD_POST,
-		JSON.stringify(body)
-	)
-
 func _on_signin_button_up() -> void:
-	var url = \"http://alexanderpi:8080/signup\"
-	check_password_and_username(url)
+	var req_type = \"signup\"
+	check_password_and_username(req_type)
 
 func _on_login_button_up() -> void:
-	var url = \"http://alexanderpi:8080/login\"
-	check_password_and_username(url)
+	var req_type = \"login\"
+	check_password_and_username(req_type)
 
 
 func _on_line_edit_text_changed(new_text: String) -> void:

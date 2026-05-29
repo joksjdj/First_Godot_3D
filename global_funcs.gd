@@ -14,6 +14,11 @@ func close_game_safely():
 	save_json()
 	get_tree().quit()
 
+func frame_based_cooldown(frames: int):
+	if Global.frame_passed >= frames:
+		Global.frame_passed = 0
+		return true
+	
 func _unhandled_input(event: InputEvent) -> void:
 	var main_player = get_node_or_null("/root/Main/MainPlayer")
 	if main_player:
@@ -59,11 +64,5 @@ func spawn_enemies(points):
 	Global.spawning_enemies = false
 		
 func message_to_server(req: String):
-	if Global.ws.get_ready_state() == WebSocketPeer.STATE_OPEN:
-		print("sending msg func")
-		var msg = {
-			"id": str(Global.id),
-			"req": str(req),
-			"lobby_id": "1"
-		}
-		Global.ws.send_text(JSON.stringify(msg))
+	if  Global.tcp.get_status() == StreamPeerTCP.STATUS_CONNECTING:
+		pass

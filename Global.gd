@@ -30,18 +30,13 @@ var main_player: CharacterBody3D
 var playing: bool = false
 @onready var frame_passed := 0
 
-var ws := WebSocketPeer.new()
+var tcp := StreamPeerTCP.new()
 var connected := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	ws.connect_to_url("ws://alexanderpi:8081")
-	
 	var menu = login_menu.instantiate()
 	get_node_or_null("/root/Main").add_child(menu)
-
-	var login_node = get_node("/root/Main/HTTPRequest")
-	login_node.request_completed.connect(_on_http_request_request_completed)
 	
 	var thread = Thread.new()
 	
@@ -55,35 +50,29 @@ func cooldown_thread():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	frame_passed += 1
-	ws.poll()
-
-	match ws.get_ready_state():
-		WebSocketPeer.STATE_OPEN:
-			if not connected:
-				connected = true
-				print("Connected to Rust server")
-				Global_funcs.message_to_server("create_lobby")
+	
+	tcp.poll()
+	match tcp.get_status():
+		StreamPeerTCP.STATUS_CONNECTING:
+			if Global_funcs.frame_based_cooldown(180):
+				print("Trying to connect...")
+			
+		StreamPeerTCP.STATUS_CONNECTED:
+			if Global_funcs.frame_based_cooldown(120):
+				tcp.put_data("Hello server\n".to_utf8_buffer())
+			if tcp.get_available_bytes() > 0:
+				var msg = tcp.get_utf8_string(tcp.get_available_bytes())
+				print("Server says:", msg)
 				
-			if frame_passed >= 30:
-				frame_passed = 0
-				if playing:
-					print("\nrequesting info")
-					Global_funcs.message_to_server("get_info")
-
-			while Global.ws.get_available_packet_count() > 0:
-					var raw = Global.ws.get_packet().get_string_from_utf8()
-					var json = JSON.parse_string(raw)
-
-					if json == null:
-						print("Invalid JSON from server:", raw)
-					else:
-						print("Received JSON:", json)
-						
-		WebSocketPeer.STATE_CLOSED:
-			if connected:
-				connected = false
-				print("Disconnected from server")
+		StreamPeerTCP.STATUS_NONE:
+			if Global_funcs.frame_based_cooldown(120):
+				var err = tcp.connect_to_host("alexanderpi", 8080)
+				if err == OK:
+					print("Connecting...")
+				else:
+					print("Failed to start connection:", err)
 				
+
 	main_player = get_node_or_null("/root/Main/MainPlayer")
 	
 	if main_player:
