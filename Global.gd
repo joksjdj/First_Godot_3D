@@ -31,7 +31,6 @@ var playing: bool = false
 @onready var frame_passed := 0
 
 var tcp := StreamPeerTCP.new()
-var connected := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -58,15 +57,20 @@ func _process(delta: float) -> void:
 				print("Trying to connect...")
 			
 		StreamPeerTCP.STATUS_CONNECTED:
-			if Global_funcs.frame_based_cooldown(120):
-				tcp.put_data("Hello server\n".to_utf8_buffer())
 			if tcp.get_available_bytes() > 0:
 				var msg = tcp.get_utf8_string(tcp.get_available_bytes())
-				print("Server says:", msg)
+				var data = JSON.parse_string(msg)
+				var json_body = JSON.parse_string(data.body)
+				if json_body:
+					data.body = json_body
+				print("Server says:", data)
+				
+				if data.type in ["login", "signup"]:
+					Global_funcs.check_login_and_signup(data)
 				
 		StreamPeerTCP.STATUS_NONE:
 			if Global_funcs.frame_based_cooldown(120):
-				var err = tcp.connect_to_host("alexanderpi", 8080)
+				var err = tcp.connect_to_host("alexanderpi", 8081)
 				if err == OK:
 					print("Connecting...")
 				else:
@@ -97,27 +101,6 @@ func _process(delta: float) -> void:
 			spawning_enemies = true
 			var points = get_node("/root/Main/Area3D/SpawnPoint").get_children()
 			Global_funcs.spawn_enemies(points)
-
-func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
-	var text = body.get_string_from_utf8()
-	print("Server says: ", text, headers, response_code)
-	
-	if response_code == 400:
-		var err_display = get_node_or_null("/root/Main/Login/Control/VBoxContainer/ErrorContainer")
-		if err_display:
-			err_display.text = text
-			
-	if response_code == 200 || response_code == 201:
-		var json = JSON.parse_string(text)
-		Global.id = json.id
-		Global.username = json.username
-		Global.created_at = Time.get_datetime_string_from_unix_time(Time.get_unix_time_from_datetime_string(json.created_at))
-		Global.highscore = json.highscore
-		Global.last_game = json.last_game
-		
-		get_node_or_null("/root/Main/Login").queue_free()
-		var menu = start_menu.instantiate()
-		get_node_or_null("/root/Main").add_child(menu)
 
 	
 func _notification(what):

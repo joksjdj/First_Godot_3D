@@ -138,7 +138,6 @@ func _on_play_button_up():
 	Global.playing = true
 	var character = character_to_spawn.instantiate()
 	get_parent().add_child(character)
-	Global_funcs.message_to_server(\"play\")
 	queue_free()
 	
 func _on_quit_pressed() -> void:

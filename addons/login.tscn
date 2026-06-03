@@ -23,20 +23,20 @@ func check_password_and_username(req_type: String):
 		return
 
 	var salt_bytes: PackedByteArray = crypto.generate_random_bytes(32)
-	var salt_hex: String = salt_bytes.hex_encode()
 	
 	var ctx = HashingContext.new()
 	ctx.start(HashingContext.HASH_SHA256)
-	ctx.update((password + salt_hex).to_utf8_buffer())
+	ctx.update((password).to_utf8_buffer())
 	var safe_password = ctx.finish().hex_encode()
 
-	print(safe_password)
-	var body = {
+	var req = {
+		\"req\": req_type,
 		\"username\": username,
 		\"password\": safe_password
 	}
+	
+	Global_funcs.message_to_server(req)
 
-	var headers = [\"Content-Type: application/json\"]
 
 func _on_signin_button_up() -> void:
 	var req_type = \"signup\"
