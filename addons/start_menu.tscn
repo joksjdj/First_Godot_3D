@@ -136,6 +136,11 @@ func get_account_info():
 func _on_play_button_up():
 	print(\"Play pressed\")
 	Global.playing = true
+	var req = {
+		\"req\": \"play\"
+	}
+	Global_funcs.message_to_server(req)
+	
 	var character = character_to_spawn.instantiate()
 	get_parent().add_child(character)
 	queue_free()

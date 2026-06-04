@@ -10,6 +10,10 @@ func save_json():
 
 
 func close_game_safely():
+	var req = {
+		"req": "exit"
+	}
+	message_to_server(req)
 	save_json()
 	get_tree().quit()
 
@@ -64,7 +68,6 @@ func spawn_enemies(points):
 
 
 ## SERVER Communication
-
 func message_to_server(req: Dictionary):
 	if  Global.tcp.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		print(req)
@@ -84,7 +87,7 @@ func check_login_and_signup(data):
 		
 		get_node("/root/Main/Login").queue_free()
 		var menu = Global.start_menu.instantiate()
-		add_child(menu)
+		get_node("/root/Main").add_child(menu)
 		
 	elif data.status in [400.0]:
 		var err_display = get_node_or_null("/root/Main/Login/Control/VBoxContainer/ErrorContainer")

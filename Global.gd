@@ -60,13 +60,17 @@ func _process(delta: float) -> void:
 			if tcp.get_available_bytes() > 0:
 				var msg = tcp.get_utf8_string(tcp.get_available_bytes())
 				var data = JSON.parse_string(msg)
-				var json_body = JSON.parse_string(data.body)
-				if json_body:
-					data.body = json_body
-				print("Server says:", data)
 				
-				if data.type in ["login", "signup"]:
-					Global_funcs.check_login_and_signup(data)
+				if typeof(data) == TYPE_DICTIONARY:
+					var json_body = JSON.parse_string(data.body)
+					if json_body:
+						data.body = json_body
+					print("Server says:", data)
+					
+					if data.type in ["login", "signup"]:
+						Global_funcs.check_login_and_signup(data)
+				else:
+					print("msg:\n", msg, "\ndata:\n", data)
 				
 		StreamPeerTCP.STATUS_NONE:
 			if Global_funcs.frame_based_cooldown(120):

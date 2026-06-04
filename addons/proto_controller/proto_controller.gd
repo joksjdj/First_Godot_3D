@@ -66,6 +66,8 @@ func _ready() -> void:
 	else:
 		print("\nAABB", mesh.get_aabb())
 	
+	Global_funcs.capture_mouse()
+	
 func _unhandled_input(event: InputEvent) -> void:
 	# Look around
 	if Global.mouse_captured and event is InputEventMouseMotion:
