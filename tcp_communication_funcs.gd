@@ -24,3 +24,6 @@ func check_login_and_signup(data):
 		var err_display = get_node_or_null("/root/Main/Login/Control/VBoxContainer/ErrorContainer")
 		if err_display:
 			err_display.text = data.body
+
+func store_game_data(data):
+	Global.game_tracking = data

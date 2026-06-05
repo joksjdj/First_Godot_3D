@@ -29,6 +29,10 @@ var main_player: CharacterBody3D
 @onready var mouse_captured : bool = false
 var playing: bool = false
 @onready var frame_passed := 0
+@onready var game_tracking = {
+	"enemies_left": 0,
+	"enemies": null,
+}
 
 var tcp := StreamPeerTCP.new()
 
@@ -65,13 +69,12 @@ func _process(delta: float) -> void:
 					var json_body = JSON.parse_string(data.body)
 					if json_body:
 						data.body = json_body
-					print("\n\nServer says:\n", data)
 					
 					if data.type in ["login", "signup"]:
 						TcpCommunicationFuncs.check_login_and_signup(data)
 						
 					if data.type in ["game_update"]:
-						pass
+						TcpCommunicationFuncs.store_game_data(data.body)
 				else:
 					print("\n\nmsg:\n", msg, "\ndata:\n", data)
 				
@@ -103,8 +106,7 @@ func _process(delta: float) -> void:
 					var heart = heart_container.get_child(heart_container.get_child_count() - 1)
 					heart.queue_free()
 					
-					
-		if enemies_left <= 0 and !spawning_enemies:
+		if enemies_left <= 0 and !spawning_enemies and game_tracking.enemies != null:
 			spawning_enemies = true
 			var points = get_node("/root/Main/Area3D/SpawnPoint").get_children()
 			Global_funcs.spawn_enemies(points)

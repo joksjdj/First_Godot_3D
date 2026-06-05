@@ -59,13 +59,6 @@ func _ready() -> void:
 	look_rotation.y = rotation.y
 	look_rotation.x = head.rotation.x
 	
-	var mesh : Mesh = $Mesh.mesh
-	if mesh == null:
-		push_error("MeshInstance3D has no mesh!")
-		return
-	else:
-		print("\nAABB", mesh.get_aabb())
-	
 	Global_funcs.capture_mouse()
 	
 func _unhandled_input(event: InputEvent) -> void:

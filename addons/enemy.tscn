@@ -4,54 +4,21 @@
 resource_name = "Enemy"
 script/source = "extends CharacterBody3D
 
+@onready var id
 var health = 3
-@onready var last_attack: int = 0
-@onready var detect_player: bool = false
-var follow_player: bool = false
-@onready var walk_path: PathFollow3D
 
 func _ready():
 	pass
 	
 func _physics_process(delta: float) -> void:
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-		
-	if health < 1:
-		Global.enemies_left -= 1
-		Global.score += 1
-		queue_free()
-		
-	move_and_slide()
+	var own_data = Global.game_tracking.enemies[id]
+	if own_data:
+		var pos = str_to_var(\"Vector3\" + own_data.pos)
+		global_position.x = lerp(position.x, pos[0], 0.5)
+		global_position.y = lerp(position.y, pos[1], 0.5)
+		global_position.z = lerp(position.z, pos[2], 0.5)
 	
-	if detect_player or follow_player:
-		if Global.main_player:
-			var flat_dir = (Global.player_head_pos - global_position)
-			flat_dir.y = 0
-			flat_dir = flat_dir.normalized()
-
-			look_at(global_position + flat_dir, Vector3.UP)
-			$Head.look_at(Global.player_head_pos, Vector3.UP)
-			
-		if detect_player:
-			if $Head/Aim.is_colliding():
-				var hit = $Head/Aim.get_collider()
-				if hit:
-					if hit.name == \"MainPlayer\" and Global.cooldown - last_attack > 1:
-						last_attack = Global.cooldown
-						Global_funcs.spawn_bullet($Head)
-		elif follow_player:
-			global_position = global_transform.origin + -global_transform.basis.z * 0.15
-	else:
-		walk_path.progress += 4 * delta
-		var t = walk_path.global_transform
-		var pos = global_transform.origin
-		pos.x = t.origin.x
-		pos.z = t.origin.z
-		global_transform.origin = pos
-			
-		$Head.global_rotation.y = walk_path.global_rotation.y
-		global_rotation.y = $Head.global_rotation.y
+		global_rotation = str_to_var(\"Vector3\" + own_data.rot)
 "
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_upa07"]

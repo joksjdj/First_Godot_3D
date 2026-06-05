@@ -51,16 +51,14 @@ func spawn_bullet(head):
 	bullet.global_position = head.global_transform.origin + -head.global_transform.basis.z
 
 func spawn_enemies(points):
+	print("enemies:\n", Global.game_tracking.enemies.keys())
 	points.shuffle()
-	for spawn in points:
-		if Global.enemies_left >= 7:
-			break
+	for enemy in Global.game_tracking.enemies.keys():
 		Global.enemies_left += 1
-		var enemy = Global.enemy_to_spawn.instantiate()
-		enemy.walk_path = spawn.get_node("Path3D/PathFollow3D")
-		enemy.global_position = spawn.get_node("Path3D/PathFollow3D").global_position
-		enemy.set_collision_layer_value(5, true)
-		spawn.add_child(enemy)
+		var spawn = points[Global.enemies_left]
+		var enemy_inst = Global.enemy_to_spawn.instantiate()
+		spawn.add_child(enemy_inst)
+		enemy_inst.id = enemy
 		
 	Global.spawning_enemies = false
 
