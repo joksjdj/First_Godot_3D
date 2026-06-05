@@ -1,0 +1,242 @@
+[gd_scene format=3 uid="uid://bjpcpkarrakqi"]
+
+[ext_resource type="Script" uid="uid://c1nkb217t4usv" path="res://addons/proto_controller/proto_controller.gd" id="1_8poij"]
+[ext_resource type="PackedScene" uid="uid://csxicr2s7p5uv" path="res://addons/grappling.tscn" id="3_c7qvv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iof21"]
+albedo_color = Color(0.91806, 0.575202, 0.222449, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ucva2"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iof21"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wc5p8"]
+albedo_color = Color(0.13, 0.9130001, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_jsk3o"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_4arys"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8poij"]
+radius = 10.0
+
+[node name="MainPlayer" type="CharacterBody3D" unique_id=1996959735 groups=["Play_packets"]]
+script = ExtResource("1_8poij")
+grappling_to_spawn = ExtResource("3_c7qvv")
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=1005837819]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09711, 0)
+material_override = SubResource("StandardMaterial3D_iof21")
+gi_mode = 2
+mesh = SubResource("CapsuleMesh_ucva2")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=901519620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1005673, 0)
+shape = SubResource("CapsuleShape3D_iof21")
+
+[node name="Head" type="Node3D" parent="." unique_id=1270458394]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=1501744608]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06581187, -0.106402874)
+
+[node name="Node3D" type="Node3D" parent="Head" unique_id=1092265460]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head/Node3D" unique_id=1869476738]
+transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, 0.1, 0, -0.2)
+material_overlay = SubResource("StandardMaterial3D_wc5p8")
+mesh = SubResource("CylinderMesh_jsk3o")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Head/Node3D" unique_id=1835232252]
+transform = Transform3D(0.24, 0, 0, 0, -8.742276e-09, 0.24199991, 0, -0.19999997, -1.0578152e-08, -0.1, 0, -0.2)
+material_overlay = SubResource("StandardMaterial3D_wc5p8")
+mesh = SubResource("CylinderMesh_jsk3o")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Head/Node3D" unique_id=71324101]
+transform = Transform3D(0.21, 0, 0, 0, 0.165, 0, 0, 0, 0.396, 0, 0.03798902, -0.20041561)
+material_overlay = SubResource("StandardMaterial3D_wc5p8")
+mesh = SubResource("BoxMesh_4arys")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=530873172]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer" unique_id=1511025269]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/TextureRect" unique_id=56920900]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 16.0
+offset_right = 168.0
+offset_bottom = 204.0
+
+[node name="fps" type="HBoxContainer" parent="CanvasLayer/TextureRect/VBoxContainer" unique_id=391110111]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/TextureRect/VBoxContainer/fps" unique_id=444603497]
+layout_mode = 2
+text = "FPS: "
+
+[node name="value" type="Label" parent="CanvasLayer/TextureRect/VBoxContainer/fps" unique_id=1459085852]
+layout_mode = 2
+
+[node name="health" type="HBoxContainer" parent="CanvasLayer/TextureRect" unique_id=1256854118]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.99700004
+anchor_right = 0.99700004
+offset_left = -264.54407
+offset_top = 4.0
+offset_right = -0.5440674
+offset_bottom = 140.0
+alignment = 2
+
+[node name="heart" type="Node2D" parent="CanvasLayer/TextureRect/health" unique_id=1667795244]
+position = Vector2(200, 80)
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/health/heart" unique_id=715525700]
+position = Vector2(135, -240)
+points = PackedVector2Array(-136, 280, -200, 216, -168, 184, -136, 216, -104, 184, -72, 216)
+closed = true
+default_color = Color(0, 0, 0, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="CanvasLayer/TextureRect/health/heart/Line2D" unique_id=1454075938]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
+
+[node name="heart2" type="Node2D" parent="CanvasLayer/TextureRect/health" unique_id=1285167502]
+position = Vector2(100, 80)
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/health/heart2" unique_id=721113086]
+position = Vector2(135, -240)
+points = PackedVector2Array(-136, 280, -200, 216, -168, 184, -136, 216, -104, 184, -72, 216)
+closed = true
+default_color = Color(0, 0, 0, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="CanvasLayer/TextureRect/health/heart2/Line2D" unique_id=1038733475]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
+
+[node name="heart3" type="Node2D" parent="CanvasLayer/TextureRect/health" unique_id=403562174]
+position = Vector2(0, 80)
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/health/heart3" unique_id=2116040827]
+position = Vector2(135, -240)
+points = PackedVector2Array(-136, 280, -200, 216, -168, 184, -136, 216, -104, 184, -72, 216)
+closed = true
+default_color = Color(0, 0, 0, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="CanvasLayer/TextureRect/health/heart3/Line2D" unique_id=334098356]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-196, 216, -136, 276, -76, 216, -104, 188, -136, 220, -168, 188)
+
+[node name="Container" type="Container" parent="CanvasLayer/TextureRect" unique_id=447502418]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Corsair" type="Node2D" parent="CanvasLayer/TextureRect/Container" unique_id=1907562681]
+position = Vector2(20, 20)
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=1022014041]
+position = Vector2(-59.636353, -42.577484)
+scale = Vector2(1.0909091, 1.3333334)
+points = PackedVector2Array(32, 32, 48, 32)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D2" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=17038708]
+position = Vector2(-10.181824, -42.577484)
+scale = Vector2(1.0909091, 1.3333334)
+points = PackedVector2Array(16, 32, 32, 32)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D3" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=1381242553]
+position = Vector2(-42.666687, -9.950775)
+scale = Vector2(1.3333334, 1.0868558)
+points = PackedVector2Array(32, 16, 32, 23.912376, 32, 31.910828, 32, 32)
+width = 1.8
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D4" type="Line2D" parent="CanvasLayer/TextureRect/Container/Corsair" unique_id=1146667014]
+position = Vector2(-42.666687, -59.528473)
+scale = Vector2(1.3333334, 1.0905421)
+points = PackedVector2Array(32, 40, 32, 32, 32, 31.910828, 32, 48)
+width = 1.8
+default_color = Color(0, 0, 0, 1)
+
+[node name="EnemyMonitoring" type="HBoxContainer" parent="CanvasLayer/TextureRect" unique_id=1979074518]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.5
+offset_right = 100.5
+offset_bottom = 56.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=160034043]
+layout_mode = 2
+text = "Enemies left: "
+
+[node name="EnemiesLeft" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=602673327]
+layout_mode = 2
+text = "0"
+
+[node name="Label2" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=1388580374]
+layout_mode = 2
+text = "| Score: "
+
+[node name="Score" type="Label" parent="CanvasLayer/TextureRect/EnemyMonitoring" unique_id=81449896]
+layout_mode = 2
+text = "0"
+
+[node name="Status" type="VBoxContainer" parent="CanvasLayer/TextureRect" unique_id=1093054163]
+visible = false
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+
+[node name="Node2D" type="Node2D" parent="CanvasLayer/TextureRect/Status" unique_id=1094823342]
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/TextureRect/Status/Node2D" unique_id=743079903]
+points = PackedVector2Array(0, 0, 64, 16, 128, 0, 128, 112, 64, 144, 0, 112)
+closed = true
+
+[node name="EnemyDetect" type="Area3D" parent="." unique_id=1713009195]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9417896, 0)
+collision_layer = 0
+collision_mask = 16
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyDetect" unique_id=1795396144]
+shape = SubResource("SphereShape3D_8poij")
+
+[connection signal="body_entered" from="EnemyDetect" to="." method="_on_enemy_detect_body_entered"]
+[connection signal="body_exited" from="EnemyDetect" to="." method="_on_enemy_detect_body_exited"]

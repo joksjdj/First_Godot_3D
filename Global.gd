@@ -1,10 +1,10 @@
 extends Node
 
 # PackedScene
-@export var login_menu: PackedScene = preload("res://addons/login.tscn")
-@export var start_menu: PackedScene = preload("res://addons/start_menu.tscn")
-@export var bullet_to_spawn: PackedScene = preload("res://addons/Bullet.tscn")
-@export var enemy_to_spawn: PackedScene = preload("res://addons/enemy.tscn")
+@onready var login_menu: PackedScene = preload("res://addons/login.tscn")
+@onready var start_menu: PackedScene = preload("res://addons/start_menu.tscn")
+@onready var bullet_to_spawn: PackedScene = preload("res://addons/Bullet.tscn")
+@onready var enemy_to_spawn: PackedScene = preload("res://addons/enemy.tscn")
 
 # Account
 @export var id: int
@@ -65,12 +65,15 @@ func _process(delta: float) -> void:
 					var json_body = JSON.parse_string(data.body)
 					if json_body:
 						data.body = json_body
-					print("Server says:", data)
+					print("\n\nServer says:\n", data)
 					
 					if data.type in ["login", "signup"]:
-						Global_funcs.check_login_and_signup(data)
+						TcpCommunicationFuncs.check_login_and_signup(data)
+						
+					if data.type in ["game_update"]:
+						pass
 				else:
-					print("msg:\n", msg, "\ndata:\n", data)
+					print("\n\nmsg:\n", msg, "\ndata:\n", data)
 				
 		StreamPeerTCP.STATUS_NONE:
 			if Global_funcs.frame_based_cooldown(120):

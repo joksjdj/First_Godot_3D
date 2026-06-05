@@ -10,10 +10,7 @@ func save_json():
 
 
 func close_game_safely():
-	var req = {
-		"req": "exit"
-	}
-	message_to_server(req)
+	TcpCommunicationFuncs.message_to_server({"req": "exit"})
 	save_json()
 	get_tree().quit()
 
@@ -27,6 +24,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if main_player:
 		if Input.is_key_pressed(KEY_ESCAPE):
 				Global.playing = false
+				TcpCommunicationFuncs.message_to_server({"req": "exit"})
 				print(get_tree().get_nodes_in_group("Play_packets"))
 				release_mouse()
 				var play_packets = get_tree().get_nodes_in_group("Play_packets")
@@ -66,30 +64,7 @@ func spawn_enemies(points):
 		
 	Global.spawning_enemies = false
 
-
-## SERVER Communication
-func message_to_server(req: Dictionary):
-	if  Global.tcp.get_status() == StreamPeerTCP.STATUS_CONNECTED:
-		print(req)
-		var json_text := JSON.stringify(req) + "\n"
-		Global.tcp.put_data(json_text.to_utf8_buffer())
-	else:
-		print("Something went wrong")
-
-func check_login_and_signup(data):
-	if data.status in [200.0, 201.0]:
-		var json = data.body
-		Global.id = json.id
-		Global.username = json.username
-		Global.created_at = Time.get_datetime_string_from_unix_time(Time.get_unix_time_from_datetime_string(json.created_at))
-		Global.highscore = json.highscore
-		Global.last_game = json.last_game
-		
-		get_node("/root/Main/Login").queue_free()
-		var menu = Global.start_menu.instantiate()
-		get_node("/root/Main").add_child(menu)
-		
-	elif data.status in [400.0]:
-		var err_display = get_node_or_null("/root/Main/Login/Control/VBoxContainer/ErrorContainer")
-		if err_display:
-			err_display.text = data.body
+func instantiate_start_menu():
+	get_node("/root/Main/Login").queue_free()
+	var menu = Global.start_menu.instantiate()
+	get_node("/root/Main").add_child(menu)
